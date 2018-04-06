@@ -13,7 +13,7 @@ from datetime import datetime
 from time import sleep
 from copy import copy
 from threading import Condition
-from Queue import Queue
+from queue import Queue
 from threading import Thread
 from time import sleep
 
@@ -28,7 +28,7 @@ priceTypeMap['buy'] = (DIRECTION_LONG, PRICETYPE_LIMITPRICE)
 priceTypeMap['buy_market'] = (DIRECTION_LONG, PRICETYPE_MARKETPRICE)
 priceTypeMap['sell'] = (DIRECTION_SHORT, PRICETYPE_LIMITPRICE)
 priceTypeMap['sell_market'] = (DIRECTION_SHORT, PRICETYPE_MARKETPRICE)
-priceTypeMapReverse = {v: k for k, v in priceTypeMap.items()} 
+priceTypeMapReverse = {v: k for k, v in list(priceTypeMap.items())} 
 
 # 委托状态印射
 statusMap = {}
@@ -70,7 +70,7 @@ class OkexGateway(VtGateway):
         except IOError:
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'读取连接配置出错，请检查'
+            log.logContent = '读取连接配置出错，请检查'
             self.onLog(log)
             return
         
@@ -84,7 +84,7 @@ class OkexGateway(VtGateway):
         except KeyError:
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'连接配置缺少字段，请检查'
+            log.logContent = '连接配置缺少字段，请检查'
             self.onLog(log)
             return            
         
@@ -96,7 +96,7 @@ class OkexGateway(VtGateway):
         
         log = VtLogData()
         log.gatewayName = self.gatewayName
-        log.logContent = u'接口初始化成功'
+        log.logContent = '接口初始化成功'
         self.onLog(log)
         
         # 启动查询
@@ -232,7 +232,7 @@ class SpotApi(OkexSpotApi):
         data = self.readData(evt)[0]
         try:
             channel = data['channel']
-        except Exception,ex:
+        except Exception as ex:
             channel = None
         if channel == None:
             return
@@ -276,13 +276,13 @@ class SpotApi(OkexSpotApi):
             return
         
         self.gateway.connected = False
-        self.writeLog(u'服务器连接断开')
+        self.writeLog('服务器连接断开')
         
         # 重新连接
         if self.active:
             def reconnect():
                 while not self.gateway.connected:            
-                    self.writeLog(u'等待10秒后重新连接')
+                    self.writeLog('等待10秒后重新连接')
                     sleep(10)
                     if not self.gateway.connected:
                         self.reconnect()
@@ -310,12 +310,12 @@ class SpotApi(OkexSpotApi):
 
     #----------------------------------------------------------------------
     def spotAllOrders(self):
-        print spotAllOrders
+        print(spotAllOrders)
         for symbol in registerSymbolPairArray:
             if symbol in okex_all_symbol_pairs:
                 self.spotOrderInfo(symbol, '-1')
 
-        for orderId in self.orderIdDict.keys():
+        for orderId in list(self.orderIdDict.keys()):
             order = self.orderDict.get(orderId, None)
             if order != None:
                 symbol_pair = (order.symbol.split('.'))[0]
@@ -325,7 +325,7 @@ class SpotApi(OkexSpotApi):
     def onOpen(self, ws):       
         """连接成功"""
         self.gateway.connected = True
-        self.writeLog(u'服务器连接成功')
+        self.writeLog('服务器连接成功')
         
         self.login()
         # 连接后查询账户和委托数据
@@ -349,7 +349,7 @@ class SpotApi(OkexSpotApi):
             contract.symbol = symbol
             contract.exchange = EXCHANGE_OKEX
             contract.vtSymbol = '.'.join([contract.symbol, contract.exchange])
-            contract.name = u'OKEX现货%s' % symbol
+            contract.name = 'OKEX现货%s' % symbol
             contract.size = 0.00001
             contract.priceTick = 0.00001
             contract.productClass = PRODUCT_SPOT
@@ -453,8 +453,8 @@ class SpotApi(OkexSpotApi):
             # print "ticker", tick.date, tick.time
             # newtick = copy(tick)
             # self.gateway.onTick(newtick)
-        except Exception,ex:
-            print "Error in onTicker ", channel
+        except Exception as ex:
+            print(("Error in onTicker ", channel))
     
     #----------------------------------------------------------------------
     def onDepth(self, data):
@@ -464,7 +464,7 @@ class SpotApi(OkexSpotApi):
         try:
             channel = data['channel']
             symbol = self.channelSymbolMap[channel]
-        except Exception,ex:
+        except Exception as ex:
             symbol = None
 
         if symbol == None:
@@ -531,7 +531,7 @@ class SpotApi(OkexSpotApi):
         rawData = data['data']
         info = rawData['info']
 
-        for symbol in info["freezed"].keys():
+        for symbol in list(info["freezed"].keys()):
             pos = VtPositionData()
             pos.gatewayName = self.gatewayName
             pos.symbol = symbol + "." + EXCHANGE_OKEX
@@ -788,8 +788,8 @@ nel': u'ok_sub_spot_etc_usdt_order'}
     #----------------------------------------------------------------------
     def onSpotOrderInfo(self, data):
         """委托信息查询回调"""
-        if "error_code" in data.keys():
-            print data
+        if "error_code" in list(data.keys()):
+            print(data)
             return 
         rawData = data['data']
         for d in rawData['orders']:
@@ -838,8 +838,8 @@ nel': u'ok_sub_spot_etc_usdt_order'}
     '''
     def onSpotOrder(self, data):
         rawData = data['data']
-        if 'error_code' in rawData.keys():
-            print data
+        if 'error_code' in list(rawData.keys()):
+            print(data)
             return
 
         orderId = str(rawData['order_id'])
@@ -857,7 +857,7 @@ nel': u'ok_sub_spot_etc_usdt_order'}
         self.orderIdDict[orderId] = localNo
 
         # print orderId, self.cache_some_order
-        if orderId in self.cache_some_order.keys():
+        if orderId in list(self.cache_some_order.keys()):
             arr = self.cache_some_order[orderId]
             for d in arr:
                 self.onSpotSubOrder(d)
@@ -891,7 +891,7 @@ nel': u'ok_sub_spot_etc_usdt_order'}
         if 'data' not in data:
             return
 
-        if 'error' in data["data"].keys():
+        if 'error' in list(data["data"].keys()):
             self.onError(data)
             return
 
@@ -922,7 +922,7 @@ nel': u'ok_sub_spot_etc_usdt_order'}
         del self.localNoDict[localNo]
 
 
-        if orderId in self.cache_some_order.keys():
+        if orderId in list(self.cache_some_order.keys()):
             del self.cache_some_order[orderId]
     
     #----------------------------------------------------------------------

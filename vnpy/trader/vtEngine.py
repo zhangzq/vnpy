@@ -1,6 +1,6 @@
 # encoding: UTF-8
 
-from __future__ import division
+
 
 import os
 import shelve
@@ -169,14 +169,14 @@ class MainEngine(object):
     def exit(self):
         """退出程序前调用，保证正常退出"""        
         # 安全关闭所有接口
-        for gateway in self.gatewayDict.values():        
+        for gateway in list(self.gatewayDict.values()):        
             gateway.close()
         
         # 停止事件引擎
         self.eventEngine.stop()
         
         # 停止上层应用引擎
-        for appEngine in self.appDict.values():
+        for appEngine in list(self.appDict.values()):
             appEngine.stop()
         
         # 保存数据引擎里的合约数据到硬盘
@@ -501,7 +501,7 @@ class DataEngine(object):
     #----------------------------------------------------------------------
     def getAllContracts(self):
         """查询所有合约对象（返回列表）"""
-        return self.contractDict.values()
+        return list(self.contractDict.values())
     
     #----------------------------------------------------------------------
     def saveContracts(self):
@@ -516,7 +516,7 @@ class DataEngine(object):
         f = shelve.open(self.contractFilePath)
         if 'data' in f:
             d = f['data']
-            for key, value in d.items():
+            for key, value in list(d.items()):
                 self.contractDict[key] = value
         f.close()
         
@@ -531,27 +531,27 @@ class DataEngine(object):
     #----------------------------------------------------------------------
     def getAllWorkingOrders(self):
         """查询所有活动委托（返回列表）"""
-        return self.workingOrderDict.values()
+        return list(self.workingOrderDict.values())
     
     #----------------------------------------------------------------------
     def getAllOrders(self):
         """获取所有委托"""
-        return self.orderDict.values()
+        return list(self.orderDict.values())
     
     #----------------------------------------------------------------------
     def getAllTrades(self):
         """获取所有成交"""
-        return self.tradeDict.values()
+        return list(self.tradeDict.values())
     
     #----------------------------------------------------------------------
     def getAllPositions(self):
         """获取所有持仓"""
-        return self.positionDict.values()
+        return list(self.positionDict.values())
     
     #----------------------------------------------------------------------
     def getAllAccounts(self):
         """获取所有资金"""
-        return self.accountDict.values()
+        return list(self.accountDict.values())
     
     #----------------------------------------------------------------------
     def getPositionDetail(self, vtSymbol):
@@ -583,7 +583,7 @@ class DataEngine(object):
     #----------------------------------------------------------------------
     def getAllPositionDetails(self):
         """查询所有本地持仓缓存细节"""
-        return self.detailDict.values()
+        return list(self.detailDict.values())
     
     #----------------------------------------------------------------------
     def updateOrderReq(self, req, vtOrderID):
@@ -614,11 +614,8 @@ class DataEngine(object):
     
 
 ########################################################################    
-class LogEngine(object):
+class LogEngine(object, metaclass=VtSingleton):
     """日志引擎"""
-    
-    # 单例模式
-    __metaclass__ = VtSingleton
     
     # 日志级别
     LEVEL_DEBUG = logging.DEBUG
@@ -926,7 +923,7 @@ class PositionDetail(object):
         self.shortTdFrozen = EMPTY_INT     
         
         # 遍历统计
-        for order in self.workingOrderDict.values():
+        for order in list(self.workingOrderDict.values()):
             # 计算剩余冻结量
             frozenVolume = order.totalVolume - order.tradedVolume
             
@@ -968,11 +965,11 @@ class PositionDetail(object):
     #----------------------------------------------------------------------
     def output(self):
         """"""
-        print self.vtSymbol, '-'*30
-        print 'long, total:%s, td:%s, yd:%s' %(self.longPos, self.longTd, self.longYd)
-        print 'long frozen, total:%s, td:%s, yd:%s' %(self.longPosFrozen, self.longTdFrozen, self.longYdFrozen)
-        print 'short, total:%s, td:%s, yd:%s' %(self.shortPos, self.shortTd, self.shortYd)
-        print 'short frozen, total:%s, td:%s, yd:%s' %(self.shortPosFrozen, self.shortTdFrozen, self.shortYdFrozen)        
+        print((self.vtSymbol, '-'*30))
+        print(('long, total:%s, td:%s, yd:%s' %(self.longPos, self.longTd, self.longYd)))
+        print(('long frozen, total:%s, td:%s, yd:%s' %(self.longPosFrozen, self.longTdFrozen, self.longYdFrozen)))
+        print(('short, total:%s, td:%s, yd:%s' %(self.shortPos, self.shortTd, self.shortYd)))
+        print(('short frozen, total:%s, td:%s, yd:%s' %(self.shortPosFrozen, self.shortTdFrozen, self.shortYdFrozen)))        
     
     #----------------------------------------------------------------------
     def convertOrderReq(self, req):

@@ -2,7 +2,7 @@
 
 """用于处理周末和节假日，以计算交易日的组件"""
 
-from __future__ import division
+
 
 import csv
 import datetime
@@ -48,7 +48,7 @@ class CalendarEditor(QtWidgets.QTableWidget):
         self.setColumnCount(2)
         self.horizontalHeader().setVisible(True)                # 关闭左边的垂直表头
         self.verticalHeader().setVisible(False)                 # 关闭左边的垂直表头
-        self.setHorizontalHeaderLabels([u'日期', u'描述'])
+        self.setHorizontalHeaderLabels(['日期', '描述'])
         
     #----------------------------------------------------------------------
     def clearTable(self):
@@ -128,14 +128,14 @@ class CalendarManager(QtWidgets.QWidget):
     #----------------------------------------------------------------------
     def initUI(self):
         """"""
-        self.setWindowTitle(u'日历管理')
+        self.setWindowTitle('日历管理')
         
         self.editor = CalendarEditor()
         
-        buttonLoad = QtWidgets.QPushButton(u'读取日历')
-        buttonSave = QtWidgets.QPushButton(u'保存日历')
-        buttonInit = QtWidgets.QPushButton(u'初始化日历')
-        buttonClear = QtWidgets.QPushButton(u'清空')
+        buttonLoad = QtWidgets.QPushButton('读取日历')
+        buttonSave = QtWidgets.QPushButton('保存日历')
+        buttonInit = QtWidgets.QPushButton('初始化日历')
+        buttonClear = QtWidgets.QPushButton('清空')
         
         buttonLoad.clicked.connect(self.editor.loadCalendar)
         buttonSave.clicked.connect(self.editor.saveCalendar)
@@ -163,7 +163,7 @@ def runCalendarEditor():
     sys.setdefaultencoding('utf8')
     
     app = QtWidgets.QApplication(sys.argv)
-    app.setFont(QtGui.QFont(u'微软雅黑', 12))
+    app.setFont(QtGui.QFont('微软雅黑', 12))
     
     try:
         import qdarkstyle
@@ -215,9 +215,9 @@ def initCalendarCsv():
         
     # 保存到csv中
     with open(CALENDAR_FILEPATH, 'w') as f:
-        writer = csv.DictWriter(f, lineterminator='\n', fieldnames=d.keys())
+        writer = csv.DictWriter(f, lineterminator='\n', fieldnames=list(d.keys()))
         writer.writeheader()
-        for d in calendarDict.values():
+        for d in list(calendarDict.values()):
             writer.writerow(d)
 
 

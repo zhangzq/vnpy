@@ -7,7 +7,7 @@ from vnpy.trader.app.optionMaster.omStrategy import OmStrategyTemplate
 class DemoStrategy(OmStrategyTemplate):
     """演示策略"""
     className = 'DemoStrategy'
-    author = u'用Python的交易员'
+    author = '用Python的交易员'
     
     temp = 123
 
@@ -30,42 +30,42 @@ class DemoStrategy(OmStrategyTemplate):
     #----------------------------------------------------------------------
     def onInit(self):
         """初始化"""
-        self.writeLog(u'%s策略初始化' %self.name)
+        self.writeLog('%s策略初始化' %self.name)
         self.putEvent()
 
     #----------------------------------------------------------------------
     def onStart(self):
         """启动"""
-        self.writeLog(u'%s策略启动' %self.name)
+        self.writeLog('%s策略启动' %self.name)
         self.putEvent()
 
     #----------------------------------------------------------------------
     def onStop(self):
         """停止"""
-        self.writeLog(u'%s策略停止' %self.name)
+        self.writeLog('%s策略停止' %self.name)
         self.putEvent()
 
     #----------------------------------------------------------------------
     def onTick(self, tick):
         """行情推送"""
-        self.writeLog(u'%s策略收到行情推送' %self.name)
+        self.writeLog('%s策略收到行情推送' %self.name)
         self.putEvent()
 
     #----------------------------------------------------------------------
     def onTrade(self, trade):
         """成交推送"""
-        self.writeLog(u'%s策略收到成交推送' %self.name)
+        self.writeLog('%s策略收到成交推送' %self.name)
         self.putEvent()
         
     #----------------------------------------------------------------------
     def onOrder(self, order):
         """委托推送"""
-        self.writeLog(u'%s策略收到委托推送' %self.name)
+        self.writeLog('%s策略收到委托推送' %self.name)
         self.putEvent()
     
     #----------------------------------------------------------------------
     def onTimer(self):
         """定时推送"""
-        self.writeLog(u'%s策略收到定时推送，自定义参数%s' %(self.name, self.temp))    
+        self.writeLog('%s策略收到定时推送，自定义参数%s' %(self.name, self.temp))    
 
     

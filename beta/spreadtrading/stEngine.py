@@ -52,9 +52,9 @@ class StDataEngine(object):
                     result, msg = self.createSpread(setting)
                     self.writeLog(msg)
                     
-                self.writeLog(u'价差配置加载完成')
+                self.writeLog('价差配置加载完成')
         except:
-            content = u'价差配置加载出错，原因：' + traceback.format_exc()
+            content = '价差配置加载出错，原因：' + traceback.format_exc()
             self.writeLog(content)
     
     #----------------------------------------------------------------------
@@ -71,7 +71,7 @@ class StDataEngine(object):
         
         # 检查价差重名
         if setting['name'] in self.spreadDict:
-            msg = u'%s价差存在重名' %setting['name']
+            msg = '%s价差存在重名' %setting['name']
             return result, msg
         
         # 检查腿是否已使用
@@ -83,7 +83,7 @@ class StDataEngine(object):
         for vtSymbol in l:
             if vtSymbol in self.vtSymbolSpreadDict:
                 existingSpread = self.vtSymbolSpreadDict[vtSymbol]
-                msg = u'%s合约已经存在于%s价差中' %(vtSymbol, existingSpread.name)
+                msg = '%s合约已经存在于%s价差中' %(vtSymbol, existingSpread.name)
                 return result, msg
     
         # 创建价差
@@ -92,13 +92,13 @@ class StDataEngine(object):
         spread.formula = setting['formula']
         formula = spread.formula
         if not re.match("[0-9A-Z\/\+\-\*\(\) ].*", formula) :
-            msg = u'%s价差存在公式问题请重新编写 %s' % (setting['name'] , spread.formula)
+            msg = '%s价差存在公式问题请重新编写 %s' % (setting['name'] , spread.formula)
             return result, msg
             
         try : 
             spread.code = parser.expr(formula).compile()
         except :
-            msg = u'%s价差存在公式问题请重新编写 %s' % (setting['name'] , spread.formula)
+            msg = '%s价差存在公式问题请重新编写 %s' % (setting['name'] , spread.formula)
             return result, msg            
 
         self.spreadDict[spread.name] = spread
@@ -144,7 +144,7 @@ class StDataEngine(object):
         
         # 返回结果
         result = True
-        msg = u'%s价差创建成功' %spread.name
+        msg = '%s价差创建成功' %spread.name
         return result, msg
     
     #----------------------------------------------------------------------
@@ -267,7 +267,7 @@ class StDataEngine(object):
         """订阅行情"""
         contract = self.mainEngine.getContract(vtSymbol)
         if not contract:
-            self.writeLog(u'订阅行情失败，找不到该合约%s' %vtSymbol)
+            self.writeLog('订阅行情失败，找不到该合约%s' %vtSymbol)
             return
         
         req = VtSubscribeReq()
@@ -289,7 +289,7 @@ class StDataEngine(object):
     #----------------------------------------------------------------------
     def getAllSpreads(self):
         """获取所有的价差"""
-        return self.spreadDict.values() 
+        return list(self.spreadDict.values()) 
 
     
 ########################################################################
@@ -358,7 +358,7 @@ class StAlgoEngine(object):
     #----------------------------------------------------------------------
     def processTimerEvent(self, event):
         """"""
-        for algo in self.algoDict.values():
+        for algo in list(self.algoDict.values()):
             algo.updateTimer()
 
     #----------------------------------------------------------------------
@@ -453,7 +453,7 @@ class StAlgoEngine(object):
     def saveSetting(self):
         """保存算法配置"""
         setting = {}
-        for algo in self.algoDict.values():
+        for algo in list(self.algoDict.values()):
             setting[algo.spreadName] = algo.getAlgoParams()
             
         f = shelve.open(self.algoFilePath)
@@ -481,7 +481,7 @@ class StAlgoEngine(object):
         if not setting:
             return
         
-        for algo in self.algoDict.values():
+        for algo in list(self.algoDict.values()):
             if algo.spreadName in setting:
                 d = setting[algo.spreadName]
                 algo.setAlgoParams(d)
@@ -489,7 +489,7 @@ class StAlgoEngine(object):
     #----------------------------------------------------------------------
     def stopAll(self):
         """停止全部算法"""
-        for algo in self.algoDict.values():
+        for algo in list(self.algoDict.values()):
             algo.stop()
             
     #----------------------------------------------------------------------
@@ -509,7 +509,7 @@ class StAlgoEngine(object):
     #----------------------------------------------------------------------
     def getAllAlgoParams(self):
         """获取所有算法的参数"""
-        return [algo.getAlgoParams() for algo in self.algoDict.values()]
+        return [algo.getAlgoParams() for algo in list(self.algoDict.values())]
     
     #----------------------------------------------------------------------
     def setAlgoBuyPrice(self, spreadName, buyPrice):

@@ -25,7 +25,7 @@ me.init(reqAddress, subAddress)
 def printLog(event):
     """打印日志"""
     log = event.dict_['data']
-    print log.logTime, log.logContent
+    print((log.logTime, log.logContent))
     
 ee.register(EVENT_LOG, printLog)
     
@@ -99,10 +99,10 @@ class Gateway(Resource):
         """查询"""
         args = self.parser.parse_args()
         token = args['token']
-        print token
-        print TOKEN
+        print(token)
+        print(TOKEN)
         if token != TOKEN:
-            print 'token error'
+            print('token error')
             return {'result_code':'error','message':'token error'}
         
         l = me.getAllGatewayDetails()
@@ -114,7 +114,7 @@ class Gateway(Resource):
         args = self.parser.parse_args()
         token = args['token']
         if token != TOKEN:
-            print 'token error'
+            print('token error')
             return {'result_code':'error','message':'token error'}
                 
         gatewayName = args['gatewayName']
@@ -166,7 +166,7 @@ class Order(Resource):
         token = args['token']
         if token != TOKEN:
             return {'result_code':'error','message':'token error'}
-        print args
+        print(args)
         vtSymbol = args['vtSymbol']        
         price = args['price']        
         volume = args['volume']        
@@ -178,9 +178,9 @@ class Order(Resource):
         if not contract:
             return {'result_code':'error','message':'contract error'}
         
-        priceType_map = {'PRICETYPE_LIMITPRICE' : u'限价','PRICETYPE_MARKETPRICE' : u'市价','PRICETYPE_FAK' : u'FAK','PRICETYPE_FOK' : u'FOK'}
-        direction_map = {'DIRECTION_LONG' : u'多','DIRECTION_SHORT' : u'空'}
-        offset_map    = {'OFFSET_OPEN' : u'开仓',  'OFFSET_CLOSE' : u'平仓','OFFSET_CLOSETODAY' : u'平今','OFFSET_CLOSEYESTERDAY' : u'平昨'}
+        priceType_map = {'PRICETYPE_LIMITPRICE' : '限价','PRICETYPE_MARKETPRICE' : '市价','PRICETYPE_FAK' : 'FAK','PRICETYPE_FOK' : 'FOK'}
+        direction_map = {'DIRECTION_LONG' : '多','DIRECTION_SHORT' : '空'}
+        offset_map    = {'OFFSET_OPEN' : '开仓',  'OFFSET_CLOSE' : '平仓','OFFSET_CLOSETODAY' : '平今','OFFSET_CLOSEYESTERDAY' : '平昨'}
         
         req = VtOrderReq()
         req.symbol    = contract.symbol
@@ -302,7 +302,7 @@ class Position(Resource):
             return {'result_code':'error','message':'token error'}
         
         data = me.getAllPositions()
-        print 'position',data
+        print(('position',data))
         l = [o.__dict__ for o in data]
         return {'result_code':'success','data':l}
 
@@ -329,7 +329,7 @@ class Contract(Resource):
             return {'result_code':'error','message':'token error'}
         
         data = me.getAllContracts()
-        print 'Contract',data
+        print(('Contract',data))
         l = [o.__dict__ for o in data]
         return {'result_code':'success','data':l}        
 

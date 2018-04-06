@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import hashlib
 
 import json
@@ -9,9 +9,9 @@ import hmac
 import time
 from datetime import datetime
 from time import time, sleep , mktime
-from Queue import Queue, Empty
+from queue import Queue, Empty
 from threading import Thread
-import urllib 
+import urllib.request, urllib.parse, urllib.error 
 
 import hashlib
 import inspect
@@ -144,7 +144,7 @@ class TradeApi(object):
         params['method'] = func_name
         params['nonce'] = self.nonce
         self.nonce += 1
-        return urllib.urlencode(params)
+        return urllib.parse.urlencode(params)
 
 
     def __get_header(self, params):
@@ -175,11 +175,11 @@ class TradeApi(object):
             try:
                 data = r.json()
                 if data['success'] == 0:
-                    print "error in vnzaif %s" % method
+                    print(("error in vnzaif %s" % method))
                     return data
                 else:
                     return data
-            except Exception,ex:
+            except Exception as ex:
                 return None
         else:
             return None    
@@ -213,12 +213,12 @@ class TradeApi(object):
                 
                 # 请求失败
                 if 'code' in data and 'message' in data:
-                    error = u'错误信息：%s' %data['message']
+                    error = '错误信息：%s' %data['message']
                     self.onError(error, req, reqID)
                 # 请求成功
                 else:
                     if self.DEBUG:
-                        print callback.__name__
+                        print((callback.__name__))
                     callback(data, req, reqID)
                 
             except Empty:
@@ -344,29 +344,29 @@ class TradeApi(object):
         print data
     '''
     def onTrade(self, data, req, reqID):
-        print data
+        print(data)
         
     def onCancelOrder(self, data, req, reqID):
-        print data
+        print(data)
 
     def onWithdraw(self, data, req, reqID):
-        print data
+        print(data)
 
     def onDepositHistory(self, data, req, reqID):
-        print data
+        print(data)
 
     def onWithdrawHistory(self, data, req, reqID):
-        print data
+        print(data)
 
     def onTradeHistory(self, data, req, reqID):
-        print data
+        print(data)
 
     def onActiveOrders(self, data, req, reqID):
-        print data
+        print(data)
 
     def onGet_info2(self, data, req, reqID):
         """用户信息"""
-        print data
+        print(data)
 
 
 
@@ -435,13 +435,13 @@ class DataApi(object):
                     if r.status_code == 200:
                         data = r.json()
                         if self.DEBUG:
-                            print callback.__name__
+                            print((callback.__name__))
 
                         data = {"return_symbol": (url.split('/'))[-1].split('_')[0] , "data":data}
                         #data["return_symbol"] = 
                         callback(data)
-                except Exception, e:
-                    print e
+                except Exception as e:
+                    print(e)
                     
             sleep(self.taskInterval)
 
@@ -483,18 +483,18 @@ class DataApi(object):
     #----------------------------------------------------------------------
     def onTick(self, data):
         """实时成交推送"""
-        print data
+        print(data)
 
     #----------------------------------------------------------------------
     def onLast(self, data):
         """实时深度推送"""
-        print data        
+        print(data)        
     #----------------------------------------------------------------------
     def onTrades(self, data):
         """实时深度推送"""
-        print data        
+        print(data)        
     #----------------------------------------------------------------------
     def onDepth(self, data):
         """实时深度推送"""
-        print data        
+        print(data)        
 

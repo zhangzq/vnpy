@@ -7,7 +7,7 @@ from time import sleep
 from threading import Thread
 
 import websocket    
-import urllib2, hashlib,struct,sha,time
+import urllib.request, urllib.error, urllib.parse, hashlib,struct,sha,time
 
 
 
@@ -88,23 +88,23 @@ class ZB_Sub_Spot_Api(object):
     #----------------------------------------------------------------------
     def onMessage(self, ws, evt):
         """信息推送""" 
-        print evt
+        print(evt)
         
     #----------------------------------------------------------------------
     def onError(self, ws, evt):
         """错误推送"""
-        print 'onError'
-        print evt
+        print('onError')
+        print(evt)
         
     #----------------------------------------------------------------------
     def onClose(self, ws):
         """接口断开"""
-        print 'onClose'
+        print('onClose')
         
     #----------------------------------------------------------------------
     def onOpen(self, ws):
         """接口打开"""
-        print 'onOpen'
+        print('onOpen')
 
     #----------------------------------------------------------------------
     def subscribeSpotTicker(self, symbol_pair):
@@ -136,7 +136,7 @@ class ZB_Sub_Spot_Api(object):
     #----------------------------------------------------------------------
     def __doXOr(self, s, value):
         slist = list(s)
-        for index in xrange(len(slist)):
+        for index in range(len(slist)):
             slist[index] = chr(ord(slist[index]) ^ value)
         return "".join(slist)
     #----------------------------------------------------------------------
@@ -210,7 +210,7 @@ class ZB_Sub_Spot_Api(object):
         
         channel = symbol_pair.lower() + "_order"
         
-        print channel , str(type_) , str(price) , str(amount)
+        print((channel , str(type_) , str(price) , str(amount)))
         self.sendTradingRequest(channel, params)
 
     #----------------------------------------------------------------------

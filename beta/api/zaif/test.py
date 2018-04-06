@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-from vnzaif import *
+from .vnzaif import *
 
 def testTrade():
     """测试交易"""
@@ -22,7 +22,7 @@ def testTrade():
     #api.active_orders( currency_pair = SYMBOL_BTCJPY )
     
     # 阻塞
-    input()    
+    eval(input())    
 
 
 def testData():
@@ -46,7 +46,7 @@ def testData():
     #data = api.getKline(SYMBOL_BTCJPY, PERIOD_1MIN, 100)
     #print data
     
-    input()
+    eval(input())
     
     
 if __name__ == '__main__':

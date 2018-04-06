@@ -1,7 +1,7 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+
+
+
+
 
 import json
 from builtins import *
@@ -25,7 +25,7 @@ def set_log_dir(log_dir):
             import jrpc
             jrpc.set_log_dir(log_dir)
         except Exception as e:
-            print("Exception", e)
+            print(("Exception", e))
 
 
 class TradeApi(object):
@@ -49,7 +49,7 @@ class TradeApi(object):
                     from . import jrpc_py
                     self._remote = jrpc_py.JRpcClient(data_format="msgpack")
             except Exception as e:
-                print("Exception", e)
+                print(("Exception", e))
             
             if not self._remote:
                 from . import jrpc_py
@@ -588,5 +588,5 @@ class TradeApi(object):
     
     def set_heartbeat(self, interval, timeout):
         self._remote.set_hearbeat_options(interval, timeout)
-        print("heartbeat_interval =", self._remote._heartbeat_interval, ", heartbeat_timeout =",
-              self._remote._heartbeat_timeout)
+        print(("heartbeat_interval =", self._remote._heartbeat_interval, ", heartbeat_timeout =",
+              self._remote._heartbeat_timeout))

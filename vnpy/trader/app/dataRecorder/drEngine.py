@@ -13,7 +13,7 @@ import copy
 import traceback
 from collections import OrderedDict
 from datetime import datetime, timedelta
-from Queue import Queue, Empty
+from queue import Queue, Empty
 from threading import Thread
 from pymongo.errors import DuplicateKeyError
 
@@ -160,7 +160,7 @@ class DrEngine(object):
             # 主力合约记录配置
             if 'active' in drSetting:
                 d = drSetting['active']
-                self.activeSymbolDict = {vtSymbol:activeSymbol for activeSymbol, vtSymbol in d.items()}
+                self.activeSymbolDict = {vtSymbol:activeSymbol for activeSymbol, vtSymbol in list(d.items())}
     
     #----------------------------------------------------------------------
     def getSetting(self):
@@ -246,7 +246,7 @@ class DrEngine(object):
                 try:
                     self.mainEngine.dbInsert(dbName, collectionName, d)
                 except DuplicateKeyError:
-                    self.writeDrLog(u'键值重复插入失败，报错信息：' %traceback.format_exc())
+                    self.writeDrLog('键值重复插入失败，报错信息：' %traceback.format_exc())
             except Empty:
                 pass
             

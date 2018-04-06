@@ -7,7 +7,7 @@
 注意事项：作者不对交易盈利做任何保证，策略代码仅供参考
 """
 
-from __future__ import division
+
 
 from vnpy.trader.vtObject import VtBarData
 from vnpy.trader.vtConstant import EMPTY_STRING
@@ -20,7 +20,7 @@ from vnpy.trader.app.ctaStrategy.ctaTemplate import (CtaTemplate,
 class KkStrategy(CtaTemplate):
     """基于King Keltner通道的交易策略"""
     className = 'KkStrategy'
-    author = u'用Python的交易员'
+    author = '用Python的交易员'
 
     # 策略参数
     kkLength = 11           # 计算通道中值的窗口数
@@ -74,7 +74,7 @@ class KkStrategy(CtaTemplate):
     #----------------------------------------------------------------------
     def onInit(self):
         """初始化策略（必须由用户继承实现）"""
-        self.writeCtaLog(u'%s策略初始化' %self.name)
+        self.writeCtaLog('%s策略初始化' %self.name)
         
         # 载入历史数据，并采用回放计算的方式初始化策略数值
         initData = self.loadBar(self.initDays)
@@ -86,13 +86,13 @@ class KkStrategy(CtaTemplate):
     #----------------------------------------------------------------------
     def onStart(self):
         """启动策略（必须由用户继承实现）"""
-        self.writeCtaLog(u'%s策略启动' %self.name)
+        self.writeCtaLog('%s策略启动' %self.name)
         self.putEvent()
 
     #----------------------------------------------------------------------
     def onStop(self):
         """停止策略（必须由用户继承实现）"""
-        self.writeCtaLog(u'%s策略停止' %self.name)
+        self.writeCtaLog('%s策略停止' %self.name)
         self.putEvent()
 
     #----------------------------------------------------------------------

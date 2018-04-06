@@ -3,7 +3,7 @@
 import json
 from collections import defaultdict
 
-import jrpc_server
+from . import jrpc_server
 
 from vnpy.event import Event
 from vnpy.trader.vtFunction import getJsonPath
@@ -21,7 +21,7 @@ ACTION_MAP['Short'] = (DIRECTION_SHORT, OFFSET_OPEN)
 ACTION_MAP['Cover'] = (DIRECTION_LONG, OFFSET_CLOSE)
 ACTION_MAP['CoverYesterday'] = (DIRECTION_LONG, OFFSET_CLOSEYESTERDAY)
 ACTION_MAP['SellYesterday'] = (DIRECTION_SHORT, OFFSET_CLOSEYESTERDAY)
-ACTION_MAP_REVERSE = {v:k for k,v in ACTION_MAP.items()}
+ACTION_MAP_REVERSE = {v:k for k,v in list(ACTION_MAP.items())}
 
 STATUS_MAP_REVERSE = {}
 STATUS_MAP_REVERSE[STATUS_NOTTRADED] = 'Accepted'
@@ -39,7 +39,7 @@ EXCHANGE_MAP['CFE'] = EXCHANGE_CFFEX
 EXCHANGE_MAP['SHF'] = EXCHANGE_SHFE
 EXCHANGE_MAP['DCE'] = EXCHANGE_DCE
 EXCHANGE_MAP['CZC'] = EXCHANGE_CZCE
-EXCHANGE_MAP_REVERSE = {v:k for k, v in EXCHANGE_MAP.items()}
+EXCHANGE_MAP_REVERSE = {v:k for k, v in list(EXCHANGE_MAP.items())}
 
 
 ########################################################################
@@ -98,7 +98,7 @@ class JsEngine(object):
             self.server.on_call = self.onCall
             self.server.listen(addr)
             
-            self.writeLog(u'Jaqs服务器启动成功')
+            self.writeLog('Jaqs服务器启动成功')
             
     #----------------------------------------------------------------------
     def onCall(self, clientId, req):
@@ -106,10 +106,10 @@ class JsEngine(object):
         method = req['method']
         cb = self.cbDict.get(method, None)
         if not cb:
-            self.writeLog(u'无法找到方法%s对应的回调函数' %method)
+            self.writeLog('无法找到方法%s对应的回调函数' %method)
             return
         
-        self.writeLog(u'收到请求：%s' %req)
+        self.writeLog('收到请求：%s' %req)
         
         cb(clientId, req)
     
@@ -134,7 +134,7 @@ class JsEngine(object):
         
         self.server.send_rsp(clientId, req, result, error)
         
-        self.writeLog(u'发出响应：%s' %result)
+        self.writeLog('发出响应：%s' %result)
     
     #----------------------------------------------------------------------
     def onUseStrategy(self, clientId, req):
@@ -143,7 +143,7 @@ class JsEngine(object):
         error = [0, '']
         self.server.send_rsp(clientId, req, result, error)
         
-        self.writeLog(u'发出响应：%s' %result)
+        self.writeLog('发出响应：%s' %result)
     
     #----------------------------------------------------------------------
     def onQueryPosition(self, clientId, req):
@@ -196,7 +196,7 @@ class JsEngine(object):
         
         self.server.send_rsp(clientId, req, result, error)
         
-        self.writeLog(u'发出响应：%s' %result)
+        self.writeLog('发出响应：%s' %result)
     
     #----------------------------------------------------------------------
     def onQueryOrder(self, clientId, req):
@@ -230,7 +230,7 @@ class JsEngine(object):
         
         self.server.send_rsp(clientId, req, result, error)
         
-        self.writeLog(u'发出响应：%s' %result)
+        self.writeLog('发出响应：%s' %result)
     
     #----------------------------------------------------------------------
     def onPlaceOrder(self, clientId, req):
@@ -242,7 +242,7 @@ class JsEngine(object):
 
         if not contract:
             vtOrderID = ''
-            error = [-1, u'委托失败，找不到合约%s' %params['security']]
+            error = [-1, '委托失败，找不到合约%s' %params['security']]
         else:
             vor = VtOrderReq()
             vor.symbol = s
@@ -257,7 +257,7 @@ class JsEngine(object):
         
         self.server.send_rsp(clientId, req, vtOrderID, error)
         
-        self.writeLog(u'发出响应：%s' %vtOrderID)
+        self.writeLog('发出响应：%s' %vtOrderID)
     
     #----------------------------------------------------------------------
     def onCancelOrder(self, clientId, req):
@@ -273,7 +273,7 @@ class JsEngine(object):
         error = [0, '']
         self.server.send_rsp(clientId, req, 'successful', error)
         
-        self.writeLog(u'发出响应：%s' %result)
+        self.writeLog('发出响应：%s' %result)
 
     #----------------------------------------------------------------------
     def onQueryAccount(self, clientId, req):
@@ -296,7 +296,7 @@ class JsEngine(object):
         error = [0, '']
         self.server.send_rsp(clientId, req, result, error)
         
-        self.writeLog(u'发出响应：%s' %result)
+        self.writeLog('发出响应：%s' %result)
      
     #----------------------------------------------------------------------
     def onQueryUniverse(self, clientId, req):
@@ -313,7 +313,7 @@ class JsEngine(object):
         error = [0, '']
         self.server.send_rsp(clientId, req, result, error)
         
-        self.writeLog(u'发出响应：%s' %result)
+        self.writeLog('发出响应：%s' %result)
           
     #----------------------------------------------------------------------
     def writeLog(self, content):

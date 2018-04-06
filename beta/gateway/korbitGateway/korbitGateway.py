@@ -8,7 +8,7 @@ import json
 from datetime import datetime
 from copy import copy
 from threading import Condition
-from Queue import Queue
+from queue import Queue
 from threading import Thread
 
 import json
@@ -50,7 +50,7 @@ class korbitGateway(VtGateway):
         except IOError:
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'读取连接配置出错，请检查'
+            log.logContent = '读取连接配置出错，请检查'
             self.onLog(log)
             return
         
@@ -68,7 +68,7 @@ class korbitGateway(VtGateway):
         except KeyError:
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'连接配置缺少字段，请检查'
+            log.logContent = '连接配置缺少字段，请检查'
             self.onLog(log)
             return            
         
@@ -77,10 +77,10 @@ class korbitGateway(VtGateway):
 
         # 初始化接口
         self.tradeApi.init(self.accessKey, self.secretKey , self.username , self.password)
-        self.writeLog(u'交易接口初始化成功')
+        self.writeLog('交易接口初始化成功')
         
         self.dataApi.connect(self.interval , self.debug)
-        self.writeLog(u'行情接口初始化成功')
+        self.writeLog('行情接口初始化成功')
         
         # 启动查询
         self.initQuery()
@@ -198,7 +198,7 @@ class KorbitTradeApi(vnkorbit.Korbit_TradeApi):
         if req.priceType != PRICETYPE_LIMITPRICE:
             err = VtErrorData()
             err.gatewayName = self.gatewayName
-            err.errorMsg = u'Korbit接口仅支持限价单'
+            err.errorMsg = 'Korbit接口仅支持限价单'
             err.errorTime = datetime.now().strftime('%H:%M:%S')
             self.gateway.onError(err)
             return None
@@ -255,13 +255,13 @@ class KorbitTradeApi(vnkorbit.Korbit_TradeApi):
 
     #--------------------------------------------------------------------
     def onError(self, method ,data):
-        print method , data 
+        print((method , data)) 
 
     #--------------------------------------------------------------------
     def on_buy_currency(self, data , req, reqID):
         if data["status"] != "success":
-            print "Error in on_buy_currency"
-            print data
+            print("Error in on_buy_currency")
+            print(data)
         else:
             localID = self.reqLocalDict[reqID]
             systemID = str(data['orderId'])
@@ -286,7 +286,7 @@ class KorbitTradeApi(vnkorbit.Korbit_TradeApi):
     def on_sell_currency(self, data , req, reqID):
         """卖出回调"""
         if data["status"] != "success":
-            print "Error in on_sell_currency"
+            print("Error in on_sell_currency")
         else:
             localID = self.reqLocalDict[reqID]
             systemID = str(data['orderId'])
@@ -306,12 +306,12 @@ class KorbitTradeApi(vnkorbit.Korbit_TradeApi):
             self.tradedVolumeDict[localID] = 0.0
             self.gateway.onOrder(order)
 
-            print "what"
+            print("what")
 
     #--------------------------------------------------------------------
     def on_list_exchange_orders(self, data , req, reqID):
         if len(data) > 0:
-            local_system_dict_keys = self.systemLocalDict.keys()
+            local_system_dict_keys = list(self.systemLocalDict.keys())
             for d_order in data:
                 systemID = str(d_order["id"])
                 if systemID in local_system_dict_keys:
@@ -416,7 +416,7 @@ class KorbitTradeApi(vnkorbit.Korbit_TradeApi):
 
     #--------------------------------------------------------------------
     def onBalances(self, data , req, reqID):
-        all_keys_returns = data.keys()
+        all_keys_returns = list(data.keys())
 
         total_balance = 0.0
         for symbol in all_keys_returns:

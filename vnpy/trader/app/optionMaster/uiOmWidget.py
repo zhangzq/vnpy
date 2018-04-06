@@ -1,6 +1,6 @@
 # encoding: UTF-8
 
-from __future__ import division
+
 
 import os
 from datetime import datetime
@@ -37,7 +37,7 @@ class OmManager(QtWidgets.QWidget):
     #----------------------------------------------------------------------
     def initUi(self):
         """初始化界面"""
-        self.setWindowTitle(u'OptionMaster管理')
+        self.setWindowTitle('OptionMaster管理')
         
         # 读取配置文件
         settingFileList = []
@@ -53,34 +53,34 @@ class OmManager(QtWidgets.QWidget):
         self.comboSettingFile.addItems(settingFileList)
         self.comboSettingFile.setCurrentIndex(0)
         
-        self.buttonInit = QtWidgets.QPushButton(u'初始化')
+        self.buttonInit = QtWidgets.QPushButton('初始化')
         self.buttonInit.clicked.connect(self.initOmEngine)
         
-        self.buttonManualTrader = QtWidgets.QPushButton(u'手动交易')
+        self.buttonManualTrader = QtWidgets.QPushButton('手动交易')
         self.buttonManualTrader.clicked.connect(self.openManualTrader)
         self.buttonManualTrader.setDisabled(True)
         
-        self.buttonGreeksMonitor = QtWidgets.QPushButton(u'希腊值监控')
+        self.buttonGreeksMonitor = QtWidgets.QPushButton('希腊值监控')
         self.buttonGreeksMonitor.clicked.connect(self.openGreeksMonitor)
         self.buttonGreeksMonitor.setDisabled(True)
         
-        self.buttonVolatilityChart = QtWidgets.QPushButton(u'波动率图表')
+        self.buttonVolatilityChart = QtWidgets.QPushButton('波动率图表')
         self.buttonVolatilityChart.clicked.connect(self.openVolatilityChart)
         self.buttonVolatilityChart.setDisabled(True)
         
-        self.buttonVolatilityManager = QtWidgets.QPushButton(u'波动率管理')
+        self.buttonVolatilityManager = QtWidgets.QPushButton('波动率管理')
         self.buttonVolatilityManager.clicked.connect(self.openVolatilityManager)
         self.buttonVolatilityManager.setDisabled(True)
         
-        self.buttonAnalysisManager = QtWidgets.QPushButton(u'持仓分析')
+        self.buttonAnalysisManager = QtWidgets.QPushButton('持仓分析')
         self.buttonAnalysisManager.clicked.connect(self.openAnalysisManager)
         self.buttonAnalysisManager.setDisabled(True)
         
-        self.buttonStrategyManager = QtWidgets.QPushButton(u'策略交易')
+        self.buttonStrategyManager = QtWidgets.QPushButton('策略交易')
         self.buttonStrategyManager.clicked.connect(self.openStrategyManager)
         self.buttonStrategyManager.setDisabled(True)        
         
-        self.buttonAdjustR = QtWidgets.QPushButton(u'拟合利率')
+        self.buttonAdjustR = QtWidgets.QPushButton('拟合利率')
         self.buttonAdjustR.clicked.connect(self.omEngine.adjustR)
         self.buttonAdjustR.setDisabled(True)        
         
@@ -113,15 +113,15 @@ class OmManager(QtWidgets.QWidget):
     def initOmEngine(self):
         """初始化引擎"""
         path = os.getcwd()
-        fileName = unicode(self.comboSettingFile.currentText())
+        fileName = str(self.comboSettingFile.currentText())
         fileName = os.path.join(path, fileName)
         result = self.omEngine.initEngine(fileName)
         
         if result:
-            self.writeLog(u'引擎初始化成功')
+            self.writeLog('引擎初始化成功')
             self.enableButtons()
         else:
-            self.writeLog(u'请勿重复初始化引擎')
+            self.writeLog('请勿重复初始化引擎')
     
     #----------------------------------------------------------------------
     def enableButtons(self):
@@ -209,7 +209,7 @@ class OmManager(QtWidgets.QWidget):
     #----------------------------------------------------------------------
     def close(self):
         """关闭"""
-        for widget in self.widgetDict.values():
+        for widget in list(self.widgetDict.values()):
             widget.close()
             
         super(OmManager, self).close()

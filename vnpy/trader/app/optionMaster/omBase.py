@@ -1,6 +1,6 @@
 # encoding: UTF-8
 
-from __future__ import division
+
 
 from copy import copy
 from collections import OrderedDict
@@ -141,7 +141,7 @@ class OmUnderlying(OmInstrument):
         self.theoDelta = self.size * self.midPrice / 100
         
         # 遍历推送自己的行情到期权链中
-        for chain in self.chainDict.values():
+        for chain in list(self.chainDict.values()):
             chain.newUnderlyingTick()
 
     #----------------------------------------------------------------------
@@ -330,7 +330,7 @@ class OmChain(object):
         self.posVega = 0
         
         # 遍历汇总
-        for option in self.optionDict.values():
+        for option in list(self.optionDict.values()):
             self.longPos += option.longPos
             self.shortPos += option.shortPos
             
@@ -351,7 +351,7 @@ class OmChain(object):
     #----------------------------------------------------------------------
     def newUnderlyingTick(self):
         """期货行情更新"""
-        for option in self.optionDict.values():
+        for option in list(self.optionDict.values()):
             option.newUnderlyingTick()
             
         self.calculatePosGreeks()
@@ -389,8 +389,8 @@ class OmChain(object):
     def adjustR(self):
         """调整折现率（r）"""
         l = []
-        callList = self.callDict.values()
-        putList = self.putDict.values()
+        callList = list(self.callDict.values())
+        putList = list(self.putDict.values())
         
         # 通过计算期权链所有PCP的平价利率
         for n, call in enumerate(callList):
@@ -417,7 +417,7 @@ class OmChain(object):
             return
         
         self.r = sum(l)/len(l)
-        for option in self.optionDict.values():
+        for option in list(self.optionDict.values()):
             option.setR(r)
 
 
@@ -472,10 +472,10 @@ class OmPortfolio(object):
         self.posTheta = 0
         self.posVega = 0
         
-        for underlying in self.underlyingDict.values():
+        for underlying in list(self.underlyingDict.values()):
             self.posDelta += underlying.posDelta
         
-        for chain in self.chainDict.values():
+        for chain in list(self.chainDict.values()):
             self.longPos += chain.longPos
             self.shortPos += chain.shortPos
             
@@ -518,6 +518,6 @@ class OmPortfolio(object):
     #----------------------------------------------------------------------
     def adjustR(self):
         """调整折现率"""
-        for chain in self.chainDict.values():
+        for chain in list(self.chainDict.values()):
             chain.adjustR()
         

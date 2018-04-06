@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-from vncoincheck import *
+from .vncoincheck import *
 
 def testTrade():
     """测试交易"""
@@ -39,7 +39,7 @@ def testTrade():
     #api.active_orders( currency_pair = SYMBOL_BTCJPY )
     
     # 阻塞
-    input()    
+    eval(input())    
 
 
 def testData():
@@ -56,7 +56,7 @@ def testData():
     api.subscribeOrderbooks(SYMBOL_BTCJPY)
 
     
-    input()
+    eval(input())
     
     
 if __name__ == '__main__':

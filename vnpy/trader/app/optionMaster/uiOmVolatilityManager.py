@@ -36,18 +36,18 @@ class VolatilityChart(pg.GraphicsWindow):
         """初始化界面"""
         portfolio = self.portfolio
         
-        self.setWindowTitle(u'波动率图表')
+        self.setWindowTitle('波动率图表')
 
         pg.setConfigOptions(antialias=True)         #启用抗锯齿
         
         # 创建绘图区以及线
-        for chain in portfolio.chainDict.values():
+        for chain in list(portfolio.chainDict.values()):
             symbol = chain.symbol + CALL_SUFFIX
 
             chart = self.addPlot(title=symbol)
             chart.showGrid(x=True, y=True) 
-            chart.setLabel('left', u'波动率')          #设置左边标签
-            chart.setLabel('bottom', u'行权价')        #设置底部标签                
+            chart.setLabel('left', '波动率')          #设置左边标签
+            chart.setLabel('bottom', '行权价')        #设置底部标签                
 
             self.bidCurveDict[symbol] = chart.plot(pen='r', symbol='t', symbolSize=8, symbolBrush='r')
             self.askCurveDict[symbol] = chart.plot(pen='g', symbolSize=8, symbolBrush='g')
@@ -55,13 +55,13 @@ class VolatilityChart(pg.GraphicsWindow):
         
         self.nextRow()
         
-        for chain in portfolio.chainDict.values():
+        for chain in list(portfolio.chainDict.values()):
             symbol = chain.symbol + PUT_SUFFIX
 
             chart = self.addPlot(title=symbol)
             chart.showGrid(x=True, y=True) 
-            chart.setLabel('left', u'波动率') 
-            chart.setLabel('bottom', u'行权价')
+            chart.setLabel('left', '波动率') 
+            chart.setLabel('bottom', '行权价')
 
             self.bidCurveDict[symbol] = chart.plot(pen='r', symbol='t', symbolSize=8, symbolBrush='r')
             self.askCurveDict[symbol] = chart.plot(pen='g', symbolSize=8, symbolBrush='g')
@@ -84,8 +84,8 @@ class VolatilityChart(pg.GraphicsWindow):
     #----------------------------------------------------------------------
     def updateChart(self):
         """更新图表"""
-        for chain in self.portfolio.chainDict.values():
-            strikeData = [option.k for option in chain.callDict.values()]
+        for chain in list(self.portfolio.chainDict.values()):
+            strikeData = [option.k for option in list(chain.callDict.values())]
             
             # 看涨
             symbol = chain.symbol + CALL_SUFFIX
@@ -94,7 +94,7 @@ class VolatilityChart(pg.GraphicsWindow):
             askImpvData = []
             pricingImpvData = []
             
-            for option in chain.callDict.values():
+            for option in list(chain.callDict.values()):
                 bidImpvData.append(option.bidImpv*100)
                 askImpvData.append(option.askImpv*100)
                 pricingImpvData.append(option.pricingImpv*100)
@@ -110,7 +110,7 @@ class VolatilityChart(pg.GraphicsWindow):
             askImpvData = []
             pricingImpvData = []
             
-            for option in chain.putDict.values():
+            for option in list(chain.putDict.values()):
                 bidImpvData.append(option.bidImpv*100)
                 askImpvData.append(option.askImpv*100)
                 pricingImpvData.append(option.pricingImpv*100)
@@ -129,15 +129,15 @@ class VolatilityChart(pg.GraphicsWindow):
 class ChainVolatilityMonitor(QtWidgets.QTableWidget):
     """期权链波动率监控"""
     headers = [
-        u'代码',
-        u'买隐波',
-        u'定价',
-        u'卖隐波',
-        u'行权价',
-        u'买隐波',
-        u'定价',
-        u'卖隐波',   
-        u'代码'
+        '代码',
+        '买隐波',
+        '定价',
+        '卖隐波',
+        '行权价',
+        '买隐波',
+        '定价',
+        '卖隐波',   
+        '代码'
     ]
 
     #----------------------------------------------------------------------
@@ -209,7 +209,7 @@ class ChainVolatilityMonitor(QtWidgets.QTableWidget):
     #----------------------------------------------------------------------
     def refresh(self):
         """刷新数据"""
-        for option in self.chain.optionDict.values():
+        for option in list(self.chain.optionDict.values()):
             d = self.cellDict[option.symbol]
             d['bid'].setText('%.1f' %(option.bidImpv*100))
             d['ask'].setText('%.1f' %(option.askImpv*100))
@@ -247,13 +247,13 @@ class ChainVolatilityManager(QtWidgets.QWidget):
         """初始化界面"""
         self.monitor = ChainVolatilityMonitor(self.chain)
         
-        buttonCallIncrease = QtWidgets.QPushButton(u'看涨+' + ('%.1f%%' %(self.IMPV_CHANGE_STEP*100)))
-        buttonCallDecrease = QtWidgets.QPushButton(u'看涨-' + ('%.1f%%' %(self.IMPV_CHANGE_STEP*100)))
-        buttonPutIncrease = QtWidgets.QPushButton(u'看跌+' + ('%.1f%%' %(self.IMPV_CHANGE_STEP*100)))
-        buttonPutDecrease = QtWidgets.QPushButton(u'看跌-' + ('%.1f%%' %(self.IMPV_CHANGE_STEP*100)))
-        buttonCallReset = QtWidgets.QPushButton(u'看涨重置')
-        buttonPutReset = QtWidgets.QPushButton(u'看跌重置')
-        buttonRefresh = QtWidgets.QPushButton(u'刷新')
+        buttonCallIncrease = QtWidgets.QPushButton('看涨+' + ('%.1f%%' %(self.IMPV_CHANGE_STEP*100)))
+        buttonCallDecrease = QtWidgets.QPushButton('看涨-' + ('%.1f%%' %(self.IMPV_CHANGE_STEP*100)))
+        buttonPutIncrease = QtWidgets.QPushButton('看跌+' + ('%.1f%%' %(self.IMPV_CHANGE_STEP*100)))
+        buttonPutDecrease = QtWidgets.QPushButton('看跌-' + ('%.1f%%' %(self.IMPV_CHANGE_STEP*100)))
+        buttonCallReset = QtWidgets.QPushButton('看涨重置')
+        buttonPutReset = QtWidgets.QPushButton('看跌重置')
+        buttonRefresh = QtWidgets.QPushButton('刷新')
         
         buttonCallIncrease.clicked.connect(self.callIncrease)
         buttonCallDecrease.clicked.connect(self.callDecrease)
@@ -285,42 +285,42 @@ class ChainVolatilityManager(QtWidgets.QWidget):
     #----------------------------------------------------------------------
     def callIncrease(self):
         """看涨增加"""
-        for option in self.chain.callDict.values():
+        for option in list(self.chain.callDict.values()):
             option.pricingImpv += self.IMPV_CHANGE_STEP
         self.monitor.refresh()
     
     #----------------------------------------------------------------------
     def callDecrease(self):
         """看涨减少"""
-        for option in self.chain.callDict.values():
+        for option in list(self.chain.callDict.values()):
             option.pricingImpv -= self.IMPV_CHANGE_STEP
         self.monitor.refresh()
     
     #----------------------------------------------------------------------
     def callReset(self):
         """看涨重置为中值"""
-        for option in self.chain.callDict.values():
+        for option in list(self.chain.callDict.values()):
             option.pricingImpv = option.midImpv
         self.monitor.refresh()
     
     #----------------------------------------------------------------------
     def putIncrease(self):
         """看跌增加"""
-        for option in self.chain.putDict.values():
+        for option in list(self.chain.putDict.values()):
             option.pricingImpv += self.IMPV_CHANGE_STEP
         self.monitor.refresh()
     
     #----------------------------------------------------------------------
     def putDecrease(self):
         """看跌减少"""
-        for option in self.chain.putDict.values():
+        for option in list(self.chain.putDict.values()):
             option.pricingImpv -= self.IMPV_CHANGE_STEP
         self.monitor.refresh()
     
     #----------------------------------------------------------------------
     def putReset(self):
         """看跌重置为中值"""
-        for option in self.chain.putDict.values():
+        for option in list(self.chain.putDict.values()):
             option.pricingImpv = option.midImpv
         self.monitor.refresh()
 
@@ -344,10 +344,10 @@ class VolatilityManager(QtWidgets.QWidget):
     #----------------------------------------------------------------------
     def initUi(self):
         """初始化界面"""
-        self.setWindowTitle(u'波动率管理')
+        self.setWindowTitle('波动率管理')
         
         tab = QtWidgets.QTabWidget()
-        for chain in self.portfolio.chainDict.values():
+        for chain in list(self.portfolio.chainDict.values()):
             chainManager = ChainVolatilityManager(chain)
             tab.addTab(chainManager, chain.symbol)
         

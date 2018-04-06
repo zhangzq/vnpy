@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import hashlib
 
 import json
@@ -9,9 +9,9 @@ import hmac
 import time
 from datetime import datetime
 from time import time, sleep , mktime
-from Queue import Queue, Empty
+from queue import Queue, Empty
 from threading import Thread
-import urllib 
+import urllib.request, urllib.parse, urllib.error 
 import websocket
 
 import inspect
@@ -62,7 +62,7 @@ class Korbit_TradeApi(object):
         try:
             return response.json()
         except json.decoder.JSONDecodeError as e:
-            print "exception: {}, response_text: {}".format(e, response.text)
+            print(("exception: {}, response_text: {}".format(e, response.text)))
             return response.text
 
     '''
@@ -169,10 +169,10 @@ class Korbit_TradeApi(object):
         else:
             try:
                 data = json.loads(r.text)
-                print "Error in r , " , data
+                print(("Error in r , " , data))
                 return data
-            except Exception,ex:
-                print ex
+            except Exception as ex:
+                print(ex)
                 return None   
 
     #----------------------------------------------------------------------
@@ -193,13 +193,13 @@ class Korbit_TradeApi(object):
                     # 请求成功
                     if data != None :
                         if self.DEBUG:
-                            print callback.__name__
+                            print((callback.__name__))
                         callback(data, req, reqID)
                     
                     sleep(0.1)
 
-            except Exception,ex:
-                print ex
+            except Exception as ex:
+                print(ex)
                 
     #----------------------------------------------------------------------
     def sendRequest(self, url , method, callback, kwargs = None,optional=None):
@@ -276,19 +276,19 @@ class Korbit_TradeApi(object):
     ## 回调函数
     ####################################################
     def on_buy_currency(self, data , req, reqID):
-        print data
+        print(data)
     #----------------------------------------------------------------------
     def on_sell_currency(self, data , req, reqID):
-        print data
+        print(data)
     #----------------------------------------------------------------------
     def on_list_exchange_orders(self, data , req, reqID):
-        print data
+        print(data)
     #----------------------------------------------------------------------
     def onCancelOrders(self, data , req, reqID):
-        print data
+        print(data)
     #----------------------------------------------------------------------
     def onBalances(self, data , req, reqID):
-        print data
+        print(data)
 
 class Korbit_DataApi(object):
 
@@ -333,10 +333,10 @@ class Korbit_DataApi(object):
                         data = r.json()
                         data["symbol"] = symbol
                         if self.DEBUG:
-                            print callback.__name__
+                            print((callback.__name__))
                         callback(data)
-                except Exception, e:
-                    print "Korbit_DataApi" , e
+                except Exception as e:
+                    print(("Korbit_DataApi" , e))
             sleep(self.taskInterval)
 
     #----------------------------------------------------------------------
@@ -364,14 +364,14 @@ class Korbit_DataApi(object):
     #----------------------------------------------------------------------
     def onTick(self, data):
         """实时成交推送"""
-        print data
+        print(data)
     #----------------------------------------------------------------------
     def onTrades(self, data):
         """实时成交推送"""
-        print data
+        print(data)
 
     #----------------------------------------------------------------------
     def onOrderbooks(self, data):
         """实时成交推送"""
-        print data
+        print(data)
 

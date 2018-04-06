@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-from vncoincheck import *
+from .vncoincheck import *
 
 def test():
 
@@ -12,7 +12,7 @@ def test():
 
 	api.sendTradesRequest()
 
-	raw_input()
+	eval(input())
 
 if __name__ == '__main__':
     test()

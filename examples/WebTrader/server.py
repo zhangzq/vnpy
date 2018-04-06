@@ -27,18 +27,18 @@ def main():
     le.addConsoleHandler()
     le.addFileHandler()
 
-    le.info(u'服务器进程启动')
+    le.info('服务器进程启动')
     
     # 创建事件引擎
     ee = EventEngine2()
-    le.info(u'事件引擎创建成功')
+    le.info('事件引擎创建成功')
     
     # 创建主引擎
     me = MainEngine(ee)
     
     # 安全退出机制
     def shutdown(signal, frame):
-        le.info(u'安全关闭进程')
+        le.info('安全关闭进程')
         me.exit()
         sys.exit()
     
@@ -52,10 +52,10 @@ def main():
     me.addApp(ctaStrategy)
     me.addApp(rpcService)
     
-    le.info(u'主引擎创建成功')
+    le.info('主引擎创建成功')
     
     # 阻塞运行
-    le.info(u'服务器启动成功')
+    le.info('服务器启动成功')
     while 1:
         sleep(1)
 

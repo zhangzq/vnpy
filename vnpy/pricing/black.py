@@ -23,7 +23,7 @@ theta：当t变动1天时，price的变动（国内交易日每年240天）
 vega：当v涨跌1个点时，price的变动（如从16%涨到17%）
 '''
 
-from __future__ import division
+
 
 from scipy import stats
 from math import (log, pow, sqrt, exp)

@@ -9,7 +9,7 @@ from datetime import datetime
 from time import sleep
 from copy import copy
 from threading import Condition
-from Queue import Queue
+from queue import Queue
 from threading import Thread
 from time import sleep
 
@@ -26,7 +26,7 @@ zb_priceTypeMap["1"] = (DIRECTION_LONG, PRICETYPE_LIMITPRICE)
 zb_priceTypeMap['buy_market'] = (DIRECTION_LONG, PRICETYPE_MARKETPRICE)
 zb_priceTypeMap["0"] = (DIRECTION_SHORT, PRICETYPE_LIMITPRICE)
 zb_priceTypeMap['sell_market'] = (DIRECTION_SHORT, PRICETYPE_MARKETPRICE)
-zb_priceTypeMapReverse = {v: k for k, v in zb_priceTypeMap.items()} 
+zb_priceTypeMapReverse = {v: k for k, v in list(zb_priceTypeMap.items())} 
 
 # 委托状态印射
 zb_statusMap = {}
@@ -68,7 +68,7 @@ class zbGateway(VtGateway):
         except IOError:
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'读取连接配置出错，请检查'
+            log.logContent = '读取连接配置出错，请检查'
             self.onLog(log)
             return
         
@@ -81,7 +81,7 @@ class zbGateway(VtGateway):
         except KeyError:
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'连接配置缺少字段，请检查'
+            log.logContent = '连接配置缺少字段，请检查'
             self.onLog(log)
             return            
         
@@ -92,7 +92,7 @@ class zbGateway(VtGateway):
         
         log = VtLogData()
         log.gatewayName = self.gatewayName
-        log.logContent = u'接口初始化成功'
+        log.logContent = '接口初始化成功'
         self.onLog(log)
         
         # 启动查询
@@ -224,7 +224,7 @@ class ZB_API_Spot(ZB_Sub_Spot_Api):
         data = self.readData(evt)
         try:
             channel = data['channel']
-        except Exception,ex:
+        except Exception as ex:
             channel = None
         if channel == None:
             return
@@ -255,13 +255,13 @@ class ZB_API_Spot(ZB_Sub_Spot_Api):
             return
         
         self.gateway.connected = False
-        self.writeLog(u'服务器连接断开')
+        self.writeLog('服务器连接断开')
         
         # 重新连接
         if self.active:
             def reconnect():
                 while not self.gateway.connected:            
-                    self.writeLog(u'等待10秒后重新连接')
+                    self.writeLog('等待10秒后重新连接')
                     sleep(10)
                     if not self.gateway.connected:
                         self.reconnect()
@@ -280,7 +280,7 @@ class ZB_API_Spot(ZB_Sub_Spot_Api):
     def onOpen(self, ws):       
         """连接成功"""
         self.gateway.connected = True
-        self.writeLog(u'服务器连接成功')
+        self.writeLog('服务器连接成功')
 
         self.spotUserInfo()
 
@@ -304,7 +304,7 @@ class ZB_API_Spot(ZB_Sub_Spot_Api):
             contract.symbol = symbol
             contract.exchange = EXCHANGE_ZB
             contract.vtSymbol = '.'.join([contract.symbol, contract.exchange])
-            contract.name = u'ZB现货%s' % symbol
+            contract.name = 'ZB现货%s' % symbol
             contract.size = 0.00001
             contract.priceTick = 0.00001
             contract.productClass = PRODUCT_SPOT
@@ -379,8 +379,8 @@ class ZB_API_Spot(ZB_Sub_Spot_Api):
             # print "ticker", tick.date , tick.time
             # newtick = copy(tick)
             # self.gateway.onTick(newtick)
-        except Exception,ex:
-            print "Error in onTicker " , channel
+        except Exception as ex:
+            print(("Error in onTicker " , channel))
 
     #----------------------------------------------------------------------
     def onDepth(self, data):
@@ -388,7 +388,7 @@ class ZB_API_Spot(ZB_Sub_Spot_Api):
         try:
             channel = data['channel']
             symbol = self.channelSymbolMap[channel]
-        except Exception,ex:
+        except Exception as ex:
             symbol = None
 
         if symbol == None:
@@ -605,7 +605,7 @@ class ZB_API_Spot(ZB_Sub_Spot_Api):
         # 现在的处理方式是， 先缓存这里的信息，等到出现了 localID，再来处理这一段
         localNo = self.orderIdDict.get(orderId , None)
         if localNo == None:
-            print "Error , localNo is none !" + str(localNo)
+            print(("Error , localNo is none !" + str(localNo)))
             return 
 
         # 委托信息
@@ -677,9 +677,9 @@ class ZB_API_Spot(ZB_Sub_Spot_Api):
             replace(':"[',':[').replace('}{','},{').replace(']",','],').replace('}"}','}}').replace(':"{"',':{"')
         rawData = json.loads(rawData)
 
-        orderDictKeys = self.orderDict.keys()
+        orderDictKeys = list(self.orderDict.keys())
 
-        system_has_orderID_list = self.orderIdDict.keys()
+        system_has_orderID_list = list(self.orderIdDict.keys())
 
         for d in rawData:
             orderId = str(d["id"])
@@ -812,8 +812,8 @@ class ZB_API_Spot(ZB_Sub_Spot_Api):
             rawData = json.loads(rawData)
             coins = rawData["coins"]
 
-        except Exception,ex:
-            print ex
+        except Exception as ex:
+            print(ex)
 
         for coin in coins:
             symbol = coin["cnName"].lower()

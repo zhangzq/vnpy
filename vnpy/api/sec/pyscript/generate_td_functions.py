@@ -69,7 +69,7 @@ def process_function(cpp_line):
         args_type_list.append(l[0])
         args_name_list.append(l[1])    
 
-    print args_type_list
+    print(args_type_list)
     if args_type_list and args_type_list[0] in STRUCT_DICT:
         create_function(fc_name, args_type_list, args_name_list)
     
@@ -145,7 +145,7 @@ def create_process(cb_name, args_type_list, args_name_list):
             source_process_f.write('\t\t%s *task_error = (%s*)task->task_error;\n' %(arg_type, arg_type))
             
             struct = STRUCT_DICT[arg_type]
-            for key in struct.keys():
+            for key in list(struct.keys()):
                 source_process_f.write('\t\terror[\"%s\"] = task_error->%s;\n' %(key, key))
 
             source_process_f.write('\t\tdelete task->task_error;\n')
@@ -161,7 +161,7 @@ def create_process(cb_name, args_type_list, args_name_list):
             source_process_f.write('\t\t%s *task_data = (%s*)task->task_data;\n' %(arg_type, arg_type))
             
             struct = STRUCT_DICT[arg_type]
-            for key in struct.keys():
+            for key in list(struct.keys()):
                 source_process_f.write('\t\tdata[\"%s\"] = task_data->%s;\n' %(key, key))
 
             source_process_f.write('\t\tdelete task->task_data;\n')
@@ -237,7 +237,7 @@ def create_function(fc_name, args_type_list, args_name_list):
     source_function_f.write('\t%s myreq = %s();\n' %(arg_type, arg_type))
     source_function_f.write('\tmemset(&myreq, 0, sizeof(myreq));\n')
 
-    for key, value in struct.items():
+    for key, value in list(struct.items()):
         if value == 'string':
             line = '\tgetString(req, "%s", myreq.%s);\n' %(key, key)
         elif value == 'int':
@@ -298,4 +298,4 @@ header_process_f.close()
 header_on_f.close()
 header_function_f.close()
 
-print API_NAME + u'处理完成'
+print((API_NAME + '处理完成'))

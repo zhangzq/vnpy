@@ -34,7 +34,7 @@ actionMap[(DIRECTION_LONG, OFFSET_CLOSEYESTERDAY)] = "CoverYesterday"
 actionMap[(DIRECTION_SHORT, OFFSET_CLOSEYESTERDAY)] = "SellYesterday"
 actionMap[(DIRECTION_LONG, OFFSET_CLOSETODAY)] = "CoverToday"
 actionMap[(DIRECTION_SHORT, OFFSET_CLOSETODAY)] = "SellToday"
-actionMapReverse = {v: k for k, v in actionMap.items()}
+actionMapReverse = {v: k for k, v in list(actionMap.items())}
 
 # 交易所类型映射
 exchangeMap = {}
@@ -44,14 +44,14 @@ exchangeMap[EXCHANGE_CZCE] = 'CZC'
 exchangeMap[EXCHANGE_DCE] = 'DCE'
 exchangeMap[EXCHANGE_SSE] = 'SH'
 exchangeMap[EXCHANGE_SZSE] = 'SZ'
-exchangeMapReverse = {v:k for k,v in exchangeMap.items()}
+exchangeMapReverse = {v:k for k,v in list(exchangeMap.items())}
 
 
 # 持仓类型映射
 sideMap = {}
 sideMap[DIRECTION_LONG] = 'Long'
 sideMap[DIRECTION_SHORT] = 'Short'
-sideMapReverse = {v:k for k,v in sideMap.items()}
+sideMapReverse = {v:k for k,v in list(sideMap.items())}
 
 # 产品类型映射
 productClassMapReverse = {}
@@ -100,7 +100,7 @@ class TkproGateway(VtGateway):
         except IOError:
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'无法加载配置'
+            log.logContent = '无法加载配置'
             self.onLog(log)
             return
         
@@ -114,7 +114,7 @@ class TkproGateway(VtGateway):
         except KeyError:
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'连接配置缺少字段，请检查'
+            log.logContent = '连接配置缺少字段，请检查'
             self.onLog(log)
             return
 
@@ -282,7 +282,7 @@ class TkproTradeApi(object):
     #----------------------------------------------------------------------
     def onConnection(self, data):
         """"""
-        self.writeLog(u'连接状态更新：%s' %data)
+        self.writeLog('连接状态更新：%s' %data)
         
         if data:
             self.qryInstrument()
@@ -293,7 +293,7 @@ class TkproTradeApi(object):
     def connect(self, tradeAddress, username, token, strategy):
         """初始化连接"""
         if self.api:
-            self.writeLog(u'交易已经连接')
+            self.writeLog('交易已经连接')
             return
         
         self.api = TradeApi(tradeAddress)
@@ -303,15 +303,15 @@ class TkproTradeApi(object):
         result, msg = self.api.login(username, token)
         
         if not result:
-            self.writeLog(u'交易登录失败，错误信息：%s' %msg)
+            self.writeLog('交易登录失败，错误信息：%s' %msg)
             return
         
         result, msg = self.api.use_strategy(strategy)
         
         if result:
-            self.writeLog(u'选定策略号：%s' %strategy)
+            self.writeLog('选定策略号：%s' %strategy)
         else:
-            self.writeLog(u'选定策略号失败')
+            self.writeLog('选定策略号失败')
         
         self.api.set_ordstatus_callback(self.onOrderStatus)
         self.api.set_trade_callback(self.onTrade)
@@ -344,7 +344,7 @@ class TkproTradeApi(object):
         taskid, msg = self.api.place_order(security, action, orderReq.price, int(orderReq.volume))
         
         if taskid is 0:
-            self.writeLog(u'委托失败，错误信息：%s' %msg)
+            self.writeLog('委托失败，错误信息：%s' %msg)
     
     #----------------------------------------------------------------------
     def cancelOrder(self, cancelOrderReq):
@@ -354,7 +354,7 @@ class TkproTradeApi(object):
 
         result, msg = self.api.cancel_order(cancelOrderReq.orderID)
         if result is 0:
-            self.writeLog(u'撤单失败，错误信息：%s' %msg)             
+            self.writeLog('撤单失败，错误信息：%s' %msg)             
     
     #----------------------------------------------------------------------
     def qryPosition(self):
@@ -362,7 +362,7 @@ class TkproTradeApi(object):
         l, msg = self.api.query_position()
         
         if l is None:
-            self.writeLog(u'查询持仓失败，错误信息：%s' %msg)  
+            self.writeLog('查询持仓失败，错误信息：%s' %msg)  
             return False
         
         for data in l:
@@ -401,7 +401,7 @@ class TkproTradeApi(object):
         l, msg = self.api.query_account()
         
         if l is None:
-            self.writeLog(u'查询资金失败，错误信息：%s' %msg)  
+            self.writeLog('查询资金失败，错误信息：%s' %msg)  
             return False
         
         for data in l:
@@ -426,12 +426,12 @@ class TkproTradeApi(object):
         l, msg = self.api.query_order()
         
         if l is None:
-            self.writeLog(u'查询委托失败，错误信息：%s' %msg)
+            self.writeLog('查询委托失败，错误信息：%s' %msg)
         else:
             for data in l:
                 self.onOrderStatus(data)
                 
-            self.writeLog(u'查询委托完成')
+            self.writeLog('查询委托完成')
     
     #----------------------------------------------------------------------
     def qryTrade(self):
@@ -439,13 +439,13 @@ class TkproTradeApi(object):
         l, msg = self.api.query_trade()
         
         if l is None:
-            self.writeLog(u'查询成交失败，错误信息：%s' %msg)
+            self.writeLog('查询成交失败，错误信息：%s' %msg)
             return False
         
         for data in l:
             self.onTrade(data)
             
-        self.writeLog(u'查询成交完成')
+        self.writeLog('查询成交完成')
         return True
     
     #----------------------------------------------------------------------
@@ -467,7 +467,7 @@ class TkproTradeApi(object):
         l, msg = self.api.query_universe()
         
         if l is None:
-            self.writeLog(u'查询合约失败，错误信息：%s' %msg)
+            self.writeLog('查询合约失败，错误信息：%s' %msg)
             return False
         
         for data in l:
@@ -481,13 +481,13 @@ class TkproTradeApi(object):
             contract.exchange = exchangeMapReverse[exchange]
             contract.vtSymbol = '.'.join([contract.symbol, contract.exchange])
             contract.productClass = PRODUCT_EQUITY
-            contract.name = unicode(row['name'])
+            contract.name = str(row['name'])
             contract.priceTick = float(row['pricetick'])
             contract.size = int(row['multiplier'])
             
             self.gateway.onContract(contract)
             
-        self.writeLog(u'查询合约完成')
+        self.writeLog('查询合约完成')
         return True
     
     
@@ -570,14 +570,14 @@ class TkproDataApi(object):
             tick.lowerLimit = data['limit_down']
     
             self.gateway.onTick(tick)
-        except Exception, e:
-            self.writeLog(u'行情更新失败，错误信息：%s' % str(e))
+        except Exception as e:
+            self.writeLog('行情更新失败，错误信息：%s' % str(e))
 
     #----------------------------------------------------------------------
     def connect(self, dataAddress, username, token):
         """连接"""
         if self.api:
-            self.writeLog(u'行情已经连接')
+            self.writeLog('行情已经连接')
             return
         
         self.api = DataApi(dataAddress)
@@ -585,10 +585,10 @@ class TkproDataApi(object):
         result, msg = self.api.login(username, token)
         
         if not result:
-            self.writeLog(u'行情登录失败，错误信息：%sa' %str(msg))
+            self.writeLog('行情登录失败，错误信息：%sa' %str(msg))
             return
         
-        self.writeLog(u'行情连接成功')
+        self.writeLog('行情连接成功')
 
     #----------------------------------------------------------------------
     def subscribe(self, subscribeReq):
@@ -599,7 +599,7 @@ class TkproDataApi(object):
         subscribed, msg = self.api.subscribe(security, fields=self.fields, func=self.onMarketData)
         
         if not subscribed:
-            self.writeLog(u'行情订阅失败，错误信息：%s' %str(msg))
+            self.writeLog('行情订阅失败，错误信息：%s' %str(msg))
     
     #----------------------------------------------------------------------
     def writeLog(self, logContent):

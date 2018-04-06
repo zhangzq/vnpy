@@ -1,6 +1,6 @@
 # encoding: UTF-8
 
-from __future__ import division
+
 import json
 import shelve
 import os
@@ -84,7 +84,7 @@ class OmEngine(object):
         """订阅对应合约的事件"""
         contract = self.mainEngine.getContract(symbol)
         if not contract:
-            self.writeLog(u'行情订阅失败，找不到合约：%s' %symbol)
+            self.writeLog('行情订阅失败，找不到合约：%s' %symbol)
             return
             
         vtSymbol = contract.vtSymbol
@@ -112,7 +112,7 @@ class OmEngine(object):
         # 读取定价模型
         model = MODEL_DICT.get(setting['model'], None)
         if not model:
-            self.writeLog(u'找不到定价模型%s' %setting['model'])
+            self.writeLog('找不到定价模型%s' %setting['model'])
             return
             
         # 创建标的对象
@@ -121,7 +121,7 @@ class OmEngine(object):
         for underlyingSymbol in setting['underlying']:
             contract = self.mainEngine.getContract(underlyingSymbol)
             if not contract:
-                self.writeLog(u'找不到标的物合约%s' %underlyingSymbol)
+                self.writeLog('找不到标的物合约%s' %underlyingSymbol)
                 continue
             
             detail = self.mainEngine.getPositionDetail(contract.vtSymbol)
@@ -139,14 +139,14 @@ class OmEngine(object):
             # 锁定标的对象
             underlying = underlyingDict.get(d['underlyingSymbol'], None)
             if not underlying:
-                self.writeLog(u'%s期权链的标的合约%s尚未创建，请检查配置文件' %(chainSymbol, underlyingSymbol))
+                self.writeLog('%s期权链的标的合约%s尚未创建，请检查配置文件' %(chainSymbol, underlyingSymbol))
                 continue
             
             # 创建期权对象并初始化
             callDict = {}
             putDict = {}
             
-            for symbol, contract in self.optionContractDict.items():
+            for symbol, contract in list(self.optionContractDict.items()):
                 if contract.underlyingSymbol == d['chainSymbol']:
                     detail = self.mainEngine.getPositionDetail(contract.vtSymbol)
                     option = OmOption(contract, detail, underlying, model, r)
@@ -157,7 +157,7 @@ class OmEngine(object):
                         putDict[option.k] = option
                         
             # 期权排序
-            strikeList = callDict.keys()
+            strikeList = list(callDict.keys())
             strikeList.sort()
             callList = [callDict[k] for k in strikeList]
             putList = [putDict[k] for k in strikeList]
@@ -170,17 +170,17 @@ class OmEngine(object):
             underlying.addChain(chain)
 
         # 创建持仓组合对象并初始化
-        self.portfolio = OmPortfolio(setting['name'], model, underlyingDict.values(), chainList)
+        self.portfolio = OmPortfolio(setting['name'], model, list(underlyingDict.values()), chainList)
         
         # 载入波动率配置
         self.loadImpvSetting()
         
         # 订阅行情和事件
-        for underlying in underlyingDict.values():
+        for underlying in list(underlyingDict.values()):
             self.subscribeEvent(underlying.vtSymbol)
             
         for chain in chainList:
-            for option in chain.optionDict.values():
+            for option in list(chain.optionDict.values()):
                 self.subscribeEvent(option.vtSymbol)
         
         # 载入成功返回
@@ -191,8 +191,8 @@ class OmEngine(object):
         """载入波动率配置"""
         f = shelve.open(self.impvFilePath)
         
-        for chain in self.portfolio.chainDict.values():
-            for option in chain.optionDict.values():
+        for chain in list(self.portfolio.chainDict.values()):
+            for option in list(chain.optionDict.values()):
                 option.pricingImpv = f.get(option.symbol, 0)
         
         f.close()
@@ -205,8 +205,8 @@ class OmEngine(object):
         
         f = shelve.open(self.impvFilePath)
         
-        for chain in self.portfolio.chainDict.values():
-            for option in chain.optionDict.values():
+        for chain in list(self.portfolio.chainDict.values()):
+            for option in list(chain.optionDict.values()):
                 f[option.symbol] = option.pricingImpv
         
         f.close()
@@ -232,8 +232,8 @@ class OmEngine(object):
         if self.portfolio:
             self.portfolio.adjustR()
             
-        for chain in self.portfolio.chainDict.values():
-            self.writeLog(u'期权链%s的折现率r拟合为%.3f' %(chain.symbol, chain.r))
+        for chain in list(self.portfolio.chainDict.values()):
+            self.writeLog('期权链%s的折现率r拟合为%.3f' %(chain.symbol, chain.r))
 
 
 ########################################################################
@@ -289,7 +289,7 @@ class OmStrategyEngine(object):
             strategy.inited = False
             
             # 发出日志
-            content = '\n'.join([u'策略%s触发异常已停止' %strategy.name,
+            content = '\n'.join(['策略%s触发异常已停止' %strategy.name,
                                 traceback.format_exc()])
             self.writeLog(content)    
     
@@ -321,7 +321,7 @@ class OmStrategyEngine(object):
     #----------------------------------------------------------------------
     def processTimerEvent(self, event):
         """处理定时事件"""
-        for strategy in self.strategyDict.values():
+        for strategy in list(self.strategyDict.values()):
             self.callStrategyFunc(strategy, strategy.onTimer)
             
     #----------------------------------------------------------------------
@@ -343,18 +343,18 @@ class OmStrategyEngine(object):
             className = setting['className']
         except Exception:
             msg = traceback.format_exc()
-            self.writeLog(u'载入策略出错：%s' %msg)
+            self.writeLog('载入策略出错：%s' %msg)
             return
         
         # 获取策略类
         strategyClass = STRATEGY_CLASS.get(className, None)
         if not strategyClass:
-            self.writeLog(u'找不到策略类：%s' %className)
+            self.writeLog('找不到策略类：%s' %className)
             return
         
         # 防止策略重名
         if name in self.strategyDict:
-            self.writeLog(u'策略实例重名：%s' %name)
+            self.writeLog('策略实例重名：%s' %name)
         else:
             # 创建策略实例
             strategy = strategyClass(self, setting)  
@@ -480,9 +480,9 @@ class OmStrategyEngine(object):
         if name in self.strategyDict:
             strategy = self.strategyDict[name]
             strategy.__setattr__(key, value)
-            self.writeLog(u'策略%s参数%s已修改为%s' %(name, key, value))
+            self.writeLog('策略%s参数%s已修改为%s' %(name, key, value))
         else:
-            self.writeLog(u'策略实例不存在：' + name)    
+            self.writeLog('策略实例不存在：' + name)    
             return None        
         
 
@@ -498,7 +498,7 @@ class OmStrategyEngine(object):
             
             return varDict
         else:
-            self.writeLog(u'策略实例不存在：' + name)    
+            self.writeLog('策略实例不存在：' + name)    
             return None
     
     #----------------------------------------------------------------------
@@ -513,23 +513,23 @@ class OmStrategyEngine(object):
             
             return paramDict
         else:
-            self.writeLog(u'策略实例不存在：' + name)    
+            self.writeLog('策略实例不存在：' + name)    
             return None    
     
     #----------------------------------------------------------------------
     def initAll(self):
         """全部初始化"""
-        for name in self.strategyDict.keys():
+        for name in list(self.strategyDict.keys()):
             self.initStrategy(name)
     
     #----------------------------------------------------------------------
     def startAll(self):
         """全部启动"""
-        for name in self.strategyDict.keys():
+        for name in list(self.strategyDict.keys()):
             self.startStrategy(name)        
             
     #----------------------------------------------------------------------
     def stopAll(self):
         """全部停止"""
-        for name in self.strategyDict.keys():
+        for name in list(self.strategyDict.keys()):
             self.stopStrategy(name)       

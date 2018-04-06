@@ -1,6 +1,6 @@
 # encoding: UTF-8
 
-from __future__ import division
+
 
 import numpy as np
 
@@ -43,7 +43,7 @@ class ScenarioValueMonitor(QtWidgets.QTableWidget):
         self.setVerticalHeaderLabels(impvChangeHeaders)
 
         # 设置数据
-        l = [d[self.key] for d in result.values()]
+        l = [d[self.key] for d in list(result.values())]
         maxValue = max(l)
         minValue = min(l)
         
@@ -124,11 +124,11 @@ class AnalysisManager(QtWidgets.QWidget):
     #----------------------------------------------------------------------
     def initUi(self):
         """初始化界面"""
-        self.setWindowTitle(u'持仓分析')
+        self.setWindowTitle('持仓分析')
         
         self.scenarioAnalysisMonitor = ScenarioAnalysisMonitor()
         
-        self.buttonScenarioAnalysis = QtWidgets.QPushButton(u'情景分析')
+        self.buttonScenarioAnalysis = QtWidgets.QPushButton('情景分析')
         self.buttonScenarioAnalysis.clicked.connect(self.updateData)
         
         hbox = QtWidgets.QHBoxLayout()
@@ -170,12 +170,12 @@ class AnalysisManager(QtWidgets.QWidget):
                 portfolioTheta = 0
                 portfolioVega = 0
                 
-                for underlying in portfolio.underlyingDict.values():
+                for underlying in list(portfolio.underlyingDict.values()):
                     portfolioPnl += underlying.midPrice * underlying.netPos * priceChange
                     portfolioDelta += underlying.theoDelta * underlying.netPos
                     
                 try:
-                    for option in portfolio.optionDict.values():
+                    for option in list(portfolio.optionDict.values()):
                         if not option.netPos:
                             continue
                         

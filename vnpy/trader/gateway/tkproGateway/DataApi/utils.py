@@ -1,7 +1,7 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+
+
+
+
 
 from builtins import *
 from collections import namedtuple
@@ -76,7 +76,7 @@ def to_obj(class_name, data):
         else:
             return data
     except Exception as e:
-        print(class_name, data, e)
+        print((class_name, data, e))
         return data
 
 

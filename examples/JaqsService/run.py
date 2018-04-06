@@ -29,22 +29,22 @@ def main():
     le.addConsoleHandler()
     le.addFileHandler()
     
-    le.info(u'启动JAQS服务进程')
+    le.info('启动JAQS服务进程')
     
     ee = EventEngine()
-    le.info(u'事件引擎创建成功')
+    le.info('事件引擎创建成功')
     
     me = MainEngine(ee)
     me.addGateway(ctpGateway)
     me.addApp(jaqsService)
-    le.info(u'主引擎创建成功')
+    le.info('主引擎创建成功')
     
     ee.register(EVENT_LOG, le.processLogEvent)
     ee.register(EVENT_JS_LOG, le.processLogEvent)
-    le.info(u'注册日志事件监听')    
+    le.info('注册日志事件监听')    
     
     me.connect('CTP')
-    le.info(u'连接CTP接口')    
+    le.info('连接CTP接口')    
     
     while True:
         sleep(1)

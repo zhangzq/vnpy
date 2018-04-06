@@ -36,7 +36,7 @@ productMap[PRODUCT_BOND] = 'BOND'
 directionMap = {}
 directionMap[DIRECTION_LONG] = '0'
 directionMap[DIRECTION_SHORT] = '1'
-directionMapReverse = {v:k for k,v in directionMap.items()}
+directionMapReverse = {v:k for k,v in list(directionMap.items())}
 
 statusMapReverse = {}
 statusMapReverse['0'] = STATUS_UNKNOWN
@@ -111,7 +111,7 @@ class FutuGateway(VtGateway):
             self.password = setting['password']
             self.env = setting['env']
         except:
-            self.writeLog(u'载入配置文件出错')
+            self.writeLog('载入配置文件出错')
             return
         
         self.connectQuote()
@@ -170,7 +170,7 @@ class FutuGateway(VtGateway):
         # 启动行情
         self.quoteCtx.start()
         
-        self.writeLog(u'行情接口连接成功')
+        self.writeLog('行情接口连接成功')
         
     #----------------------------------------------------------------------
     def connectTrade(self):
@@ -224,7 +224,7 @@ class FutuGateway(VtGateway):
                                                order_deal_push=True, 
                                                envtype=self.env)
         
-        self.writeLog(u'交易接口连接成功')
+        self.writeLog('交易接口连接成功')
     
     #----------------------------------------------------------------------
     def subscribe(self, subscribeReq):
@@ -233,7 +233,7 @@ class FutuGateway(VtGateway):
             code, data = self.quoteCtx.subscribe(subscribeReq.symbol, data_type, True)
             
             if code:
-                self.writeError(code, u'订阅行情失败：%s' %data)
+                self.writeError(code, '订阅行情失败：%s' %data)
         
     #----------------------------------------------------------------------
     def sendOrder(self, orderReq):
@@ -254,7 +254,7 @@ class FutuGateway(VtGateway):
                                                price_mode=priceMode)
         
         if code:
-            self.writeError(code, u'委托失败：%s' %data)
+            self.writeError(code, '委托失败：%s' %data)
             return ''
         
         for ix, row in data.iterrows():
@@ -271,17 +271,17 @@ class FutuGateway(VtGateway):
                                                     self.env)
         
         if code:
-            self.writeError(code, u'撤单失败：%s' %data)
+            self.writeError(code, '撤单失败：%s' %data)
             return
     
     #----------------------------------------------------------------------
     def qryContract(self):
         """查询合约"""
-        for vtProductClass, product in productMap.items():
+        for vtProductClass, product in list(productMap.items()):
             code, data = self.quoteCtx.get_stock_basicinfo(self.market, product)
             
             if code:
-                self.writeError(code, u'查询合约信息失败：%s' %data)
+                self.writeError(code, '查询合约信息失败：%s' %data)
                 return
             
             for ix, row in data.iterrows():
@@ -297,7 +297,7 @@ class FutuGateway(VtGateway):
                 
                 self.onContract(contract)
         
-        self.writeLog(u'合约信息查询成功')
+        self.writeLog('合约信息查询成功')
     
     #----------------------------------------------------------------------
     def qryAccount(self):
@@ -305,7 +305,7 @@ class FutuGateway(VtGateway):
         code, data = self.tradeCtx.accinfo_query(self.env)
         
         if code:
-            self.writeError(code, u'查询账户资金失败：%s' %data)
+            self.writeError(code, '查询账户资金失败：%s' %data)
             return
         
         for ix, row in data.iterrows():
@@ -326,7 +326,7 @@ class FutuGateway(VtGateway):
         code, data = self.tradeCtx.position_list_query(envtype=self.env)
         
         if code:
-            self.writeError(code, u'查询持仓失败：%s' %data)
+            self.writeError(code, '查询持仓失败：%s' %data)
             return
             
         for ix, row in data.iterrows():
@@ -355,11 +355,11 @@ class FutuGateway(VtGateway):
         code, data = self.tradeCtx.order_list_query("", envtype=self.env)
         
         if code:
-            self.writeError(code, u'查询委托失败：%s' %data)
+            self.writeError(code, '查询委托失败：%s' %data)
             return
         
         self.processOrder(data)
-        self.writeLog(u'委托查询成功')
+        self.writeLog('委托查询成功')
     
     #----------------------------------------------------------------------
     def qryTrade(self):
@@ -367,11 +367,11 @@ class FutuGateway(VtGateway):
         code, data = self.tradeCtx.deal_list_query(self.env)
         
         if code:
-            self.writeError(code, u'查询成交失败：%s' %data)
+            self.writeError(code, '查询成交失败：%s' %data)
             return
         
         self.processDeal(data)
-        self.writeLog(u'成交查询成功')
+        self.writeLog('成交查询成功')
         
     #----------------------------------------------------------------------
     def close(self):

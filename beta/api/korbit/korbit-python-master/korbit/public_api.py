@@ -6,7 +6,7 @@ import logging
 try:
     from urllib.parse import urljoin
 except ImportError:
-    from urlparse import urljoin
+    from urllib.parse import urljoin
 
 
 class PublicAPI:
@@ -53,9 +53,9 @@ class PublicAPI:
         return self.request_get("constants")
 
     def request_get(self, path, headers=None, params=None):
-        print urljoin(self.host, path)
+        print((urljoin(self.host, path)))
         response = requests.get(urljoin(self.host, path), headers=headers, params=params, timeout=self.__timeout)
-        print response
+        print(response)
         try:
             return response.json()
         except json.decoder.JSONDecodeError as e:
@@ -63,9 +63,9 @@ class PublicAPI:
             return response.text
 
     def request_post(self, path, headers=None, data=None):
-        print urljoin(self.host, path) , headers , data 
+        print((urljoin(self.host, path) , headers , data)) 
         response = requests.post(urljoin(self.host, path), headers=headers, data=data, timeout=self.__timeout)
-        print response
+        print(response)
         try:
             return response.json()
         except json.decoder.JSONDecodeError as e:

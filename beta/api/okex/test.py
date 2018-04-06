@@ -1,6 +1,6 @@
 # encoding: UTF-8
 
-from vnokex import *
+from .vnokex import *
 
 # 在OkCoin网站申请这两个Key，分别对应用户名和密码
 apiKey = '你的accessKey'
@@ -48,4 +48,4 @@ api.subscribeSpotKlines("bch_btc","30min")
 合约账户信息、 持仓信息等，在登录后都会自动推送。。。官方文档这样写的，还没实际验证过
 '''
 
-input()
+eval(input())

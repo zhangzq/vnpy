@@ -1,7 +1,7 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+
+
+
+
 
 import json
 import random
@@ -178,7 +178,7 @@ class JRpcClient(object):
                 # print "RECV timeout: ", e
                 pass
             except Exception as e:
-                print("_recv_run:", e)
+                print(("_recv_run:", e))
     
     def _callback_run(self):
         while not self._should_close:
@@ -192,9 +192,9 @@ class JRpcClient(object):
                 if str(e) == "'NoneType' object is not callable":
                     pass
                 else:
-                    print("_callback_run {}".format(r), type(e), e)
+                    print(("_callback_run {}".format(r), type(e), e))
             except Exception as e:
-                print("_callback_run {}".format(r), type(e), e)
+                print(("_callback_run {}".format(r), type(e), e))
     
     def _async_call(self, func):
         self._callback_queue.put(func)
@@ -268,7 +268,7 @@ class JRpcClient(object):
                     self._async_call(lambda: self.on_rpc_callback(msg['method'], msg['result']))
         
         except Exception as e:
-            print("_on_data_arrived:", e)
+            print(("_on_data_arrived:", e))
             pass
     
     def _send_hearbeat(self):

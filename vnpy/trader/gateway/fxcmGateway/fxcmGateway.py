@@ -30,13 +30,13 @@ statusMapReverse[9] = STATUS_ALLTRADED
 priceTypeMap = {}
 priceTypeMap[PRICETYPE_LIMITPRICE] = 'limit'
 priceTypeMap[PRICETYPE_MARKETPRICE] = 'market'
-priceTypeMapReverse = {v: k for k, v in priceTypeMap.items()} 
+priceTypeMapReverse = {v: k for k, v in list(priceTypeMap.items())} 
 
 # 方向类型映射
 directionMap = {}
 directionMap[DIRECTION_LONG] = 'buy'
 directionMap[DIRECTION_SHORT] = 'sell'
-directionMapReverse = {v: k for k, v in directionMap.items()}
+directionMapReverse = {v: k for k, v in list(directionMap.items())}
 
 
 ########################################################################
@@ -64,7 +64,7 @@ class FxcmGateway(VtGateway):
         except IOError:
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'读取连接配置出错，请检查'
+            log.logContent = '读取连接配置出错，请检查'
             self.onLog(log)
             return
         
@@ -78,7 +78,7 @@ class FxcmGateway(VtGateway):
         except KeyError:
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'连接配置缺少字段，请检查'
+            log.logContent = '连接配置缺少字段，请检查'
             self.onLog(log)
             return            
         
@@ -160,14 +160,14 @@ class Api(FxcmApi):
     #----------------------------------------------------------------------
     def onConnect(self):
         """连接回调"""
-        self.writeLog(u'服务器连接成功')
+        self.writeLog('服务器连接成功')
         
         self.getInstruments()
         
     #----------------------------------------------------------------------
     def onDisconnect(self):
         """断开回调"""
-        self.writeLog(u'服务器连接断开')
+        self.writeLog('服务器连接断开')
         
     #----------------------------------------------------------------------
     def onError(self, error, reqid):
@@ -185,7 +185,7 @@ class Api(FxcmApi):
         for d in data['data']['instrument']:
             if not d['visible']:
                 self.updateSubscriptions(d['symbol'])
-                self.writeLog(u'添加合约%s到交易表' %d['symbol'])
+                self.writeLog('添加合约%s到交易表' %d['symbol'])
                 
         self.qryContracts()
         self.qryOrders()
@@ -199,37 +199,37 @@ class Api(FxcmApi):
         if 'offers' in data:
             for d in data['offers']:
                 self.processContracts(d)
-            self.writeLog(u'合约信息查询成功')
+            self.writeLog('合约信息查询成功')
             #self.subscribeModel(self.MODEL_OFFER)
             
         elif 'orders' in data:
             for d in data['orders']:
                 self.processOrders(d)
-            self.writeLog(u'委托查询成功')
+            self.writeLog('委托查询成功')
             self.subscribeModel(self.MODEL_ORDER)
             
         elif 'closed_positions' in data:
             for d in data['closed_positions']:
                 self.processTrades(d)
-            self.writeLog(u'已平成交查询成功')
+            self.writeLog('已平成交查询成功')
             self.subscribeModel(self.MODEL_CLOSEDPOSITION)
             
         elif 'open_positions' in data:
             for d in data['open_positions']:
                 self.processTrades(d)
-            self.writeLog(u'未平成交查询成功')
+            self.writeLog('未平成交查询成功')
             self.subscribeModel(self.MODEL_OPENPOSITION)
             
         elif 'summary' in data:
             for d in data['summary']:
                 self.processPositions(d)
-            self.writeLog(u'持仓查询成功')
+            self.writeLog('持仓查询成功')
             self.subscribeModel(self.MODEL_SUMMARY)
             
         elif 'accounts' in data:
             for d in data['accounts']:
                 self.processAccounts(d)
-            self.writeLog(u'账户查询成功')
+            self.writeLog('账户查询成功')
             self.subscribeModel(self.MODEL_ACCOUNT)
     
     #----------------------------------------------------------------------
@@ -409,7 +409,7 @@ class Api(FxcmApi):
     def onSubscribe(self, data, reqid):
         """订阅行情回调"""
         symbol = data['pairs'][0]['Symbol']
-        self.writeLog(u'%s行情订阅成功' %symbol)
+        self.writeLog('%s行情订阅成功' %symbol)
     
     #----------------------------------------------------------------------
     def onUnsubscribe(self, data, reqid):
@@ -429,27 +429,27 @@ class Api(FxcmApi):
     #----------------------------------------------------------------------
     def onUpdateSubscriptions(self, data, reqid):
         """订阅表回调"""
-        self.writeLog(u'订阅表更新%s' %data)
+        self.writeLog('订阅表更新%s' %data)
     
     #----------------------------------------------------------------------
     def onOpenTrade(self, data, reqid):
         """开仓回调"""
-        print data, reqid
+        print((data, reqid))
         
     #----------------------------------------------------------------------
     def onCloseTrade(self, data, reqid):
         """平仓回调"""
-        print data, reqid 
+        print((data, reqid)) 
         
     #----------------------------------------------------------------------
     def onChangeOrder(self, data, reqid):
         """改单回调"""
-        print data, reqid       
+        print((data, reqid))       
 
     #----------------------------------------------------------------------
     def onDeleteOrder(self, data, reqid):
         """撤单回调"""
-        print data, reqid       
+        print((data, reqid))       
     
     #----------------------------------------------------------------------
     def onPriceUpdate(self, data):

@@ -8,7 +8,7 @@ import json
 from datetime import datetime
 from copy import copy
 from threading import Condition
-from Queue import Queue
+from queue import Queue
 from threading import Thread
 
 import json
@@ -49,7 +49,7 @@ class CoincheckGateway(VtGateway):
         except IOError:
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'读取连接配置出错，请检查'
+            log.logContent = '读取连接配置出错，请检查'
             self.onLog(log)
             return
         
@@ -64,7 +64,7 @@ class CoincheckGateway(VtGateway):
         except KeyError:
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'连接配置缺少字段，请检查'
+            log.logContent = '连接配置缺少字段，请检查'
             self.onLog(log)
             return            
         
@@ -73,11 +73,11 @@ class CoincheckGateway(VtGateway):
 
         # 初始化接口
         self.tradeApi.init(accessKey, secretKey)
-        self.writeLog(u'交易接口初始化成功')
+        self.writeLog('交易接口初始化成功')
         
         #self.dataApi.connect(interval,  debug)
         self.dataApi.connect()
-        self.writeLog(u'行情接口初始化成功')
+        self.writeLog('行情接口初始化成功')
 
         
         # 启动查询
@@ -146,7 +146,7 @@ class CoincheckGateway(VtGateway):
 
     #----------------------------------------------------------------------
     def onListOrder(self, data):
-        print data
+        print(data)
     
     #----------------------------------------------------------------------
     def setQryEnabled(self, qryEnabled):
@@ -181,7 +181,7 @@ class CoincheckTradeApi(vncoincheck.TradeApi):
     #----------------------------------------------------------------------
     
     def onError(self, method ,data):
-        print method , data 
+        print((method , data)) 
     #
     '''
     "return" :
@@ -191,7 +191,7 @@ ty_status': u'identity_verified', u'id': 1007549}
     '''
     def onGet_info(self, data, req, reqID):
         """用户信息"""
-        print data
+        print(data)
     '''
     {u'zec': u'0', u'rep_debt': u'0.0', u'xem': u'0', u'lsk': u'0', u'rep_lend_in_use': u'0.0', u'ltc_de
 bt': u'0.0', u'xmr_reserved': u'0.0', u'cny': u'0', u'btc_reserved': u'0.0', u'dao_reserved': u'0.0'
@@ -215,8 +215,8 @@ u'dash': u'0', u'cny_debt': u'0.0', u'xrp_lend_in_use': u'0.0', u'xem_reserved':
     '''
     def onGet_balance(self, data, req, reqID):
         if data["success"] == 0:
-            print "Error in onGet_balance"
-            print data
+            print("Error in onGet_balance")
+            print(data)
         else:
             account = VtAccountData()
             account.gatewayName = self.gatewayName
@@ -257,7 +257,7 @@ u'dash': u'0', u'cny_debt': u'0.0', u'xrp_lend_in_use': u'0.0', u'xem_reserved':
         if req.priceType != PRICETYPE_LIMITPRICE:
             err = VtErrorData()
             err.gatewayName = self.gatewayName
-            err.errorMsg = u'Coincheck接口仅支持限价单'
+            err.errorMsg = 'Coincheck接口仅支持限价单'
             err.errorTime = datetime.now().strftime('%H:%M:%S')
             self.gateway.onError(err)
             return None
@@ -308,8 +308,8 @@ u'id': 324141928}
         # print "onBuy_btc"
         # print data
         if data["success"] == 0:
-            print "Error in onBuy_btc"
-            print data
+            print("Error in onBuy_btc")
+            print(data)
         else:
             localID = self.reqLocalDict[reqID]
             systemID = data['id']
@@ -335,7 +335,7 @@ u'id': 324141928}
         # print data
         """卖出回调"""
         if data["success"] == 0:
-            print "Error in onSell_btc"
+            print("Error in onSell_btc")
         else:
             localID = self.reqLocalDict[reqID]
             systemID = data['id']
@@ -376,7 +376,7 @@ pending_market_buy_amount': None, u'rate': u'100.0', u'pair': u'btc_jpy', u'stop
 
             stile_live_order_system_id = [ x["id"] for x in orders]
             #print "stile_live_order_system_id", stile_live_order_system_id
-            local_system_dict_keys = self.systemLocalDict.keys()
+            local_system_dict_keys = list(self.systemLocalDict.keys())
             # 对系统中有的订单，进行
             for bef_system_id in local_system_dict_keys:
                 if bef_system_id not in stile_live_order_system_id:
@@ -513,7 +513,7 @@ pending_market_buy_amount': None, u'rate': u'100.0', u'pair': u'btc_jpy', u'stop
             self.gateway.onOrder(order)
 
     def onHistory_orders(self, data, req, reqID):
-        print data
+        print(data)
 
     def cancel(self, req):
         localID = req.orderID
@@ -547,7 +547,7 @@ class CoincheckSocketDataApi(vncoincheck.DataApiSocket):
         contract.symbol = SYMBOL_BTCJPY
         contract.exchange = EXCHANGE_COINCHECK
         contract.vtSymbol = '.'.join([contract.symbol, contract.exchange])
-        contract.name = u'日元coincheck现货BTC'
+        contract.name = '日元coincheck现货BTC'
         contract.size = 0.0001
         contract.priceTick = 0.0001
         contract.productClass = PRODUCT_SPOT
@@ -594,7 +594,7 @@ class CoincheckSocketDataApi(vncoincheck.DataApiSocket):
                 tick.bidPrice3, tick.bidVolume3 = bids[2]
                 tick.bidPrice4, tick.bidVolume4 = bids[3]
                 tick.bidPrice5, tick.bidVolume5 = bids[4]
-            except Exception,ex:
+            except Exception as ex:
                 pass
 
             try:
@@ -603,7 +603,7 @@ class CoincheckSocketDataApi(vncoincheck.DataApiSocket):
                 tick.askPrice3, tick.askVolume3 = asks[2]
                 tick.askPrice4, tick.askVolume4 = asks[3]
                 tick.askPrice5, tick.askVolume5 = asks[4]
-            except Exception,ex:
+            except Exception as ex:
                 pass
 
             now = datetime.now()
@@ -682,7 +682,7 @@ class CoincheckDataApi(vncoincheck.DataApi):
             contract.symbol = SYMBOL_BTCJPY
             contract.exchange = EXCHANGE_COINCHECK
             contract.vtSymbol = '.'.join([contract.symbol, contract.exchange])
-            contract.name = u'日元coincheck现货BTC'
+            contract.name = '日元coincheck现货BTC'
             contract.size = 0.0001
             contract.priceTick = 0.0001
             contract.productClass = PRODUCT_SPOT
@@ -716,7 +716,7 @@ class CoincheckDataApi(vncoincheck.DataApi):
     #----------------------------------------------------------------------
     def onTrades(self, data):
         """实时成交推送"""
-        print data
+        print(data)
 
     #----------------------------------------------------------------------
     def onOrderbooks(self, data):

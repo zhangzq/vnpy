@@ -19,42 +19,42 @@ from vnpy.trader.vtFunction import getJsonPath, getTempPath
 optionPriceTypeMap = {}
 optionPriceTypeMap[PRICETYPE_LIMITPRICE] = DATA_TYPE.DFITCSEC_SOP_LimitPrice
 optionPriceTypeMap[PRICETYPE_MARKETPRICE] = DATA_TYPE.DFITCSEC_SOP_LastPrice
-optionPriceTypeMapReverse = {v: k for k, v in optionPriceTypeMap.items()} 
+optionPriceTypeMapReverse = {v: k for k, v in list(optionPriceTypeMap.items())} 
 
 # 股票价格类型映射 
 stockPriceTypeMap = {}
 stockPriceTypeMap[PRICETYPE_LIMITPRICE] = DATA_TYPE.DFITCSEC_OT_LimitPrice
 stockPriceTypeMap[PRICETYPE_MARKETPRICE] = DATA_TYPE.DFITCSEC_OT_SHBESTFRTradeLeftWithdraw
-stockPriceTypeMapReverse = {v: k for k, v in stockPriceTypeMap.items()} 
+stockPriceTypeMapReverse = {v: k for k, v in list(stockPriceTypeMap.items())} 
 
 # 方向类型映射
 directionMap = {}
 directionMap[DIRECTION_LONG] = DATA_TYPE.DFITCSEC_ED_Buy
 directionMap[DIRECTION_SHORT] = DATA_TYPE.DFITCSEC_ED_Sell
-directionMapReverse = {v: k for k, v in directionMap.items()}
+directionMapReverse = {v: k for k, v in list(directionMap.items())}
 
 # 开平类型映射
 offsetMap = {}
 offsetMap[OFFSET_OPEN] = DATA_TYPE.DFITCSEC_OCF_Open
 offsetMap[OFFSET_CLOSE] = DATA_TYPE.DFITCSEC_OCF_Close
-offsetMapReverse = {v:k for k,v in offsetMap.items()}
+offsetMapReverse = {v:k for k,v in list(offsetMap.items())}
 
 
 # 交易所类型映射
 exchangeMap = {}
 exchangeMap[EXCHANGE_SSE] = DATA_TYPE.DFITCSEC_EI_SH
 exchangeMap[EXCHANGE_SZSE] = DATA_TYPE.DFITCSEC_EI_SZ
-exchangeMapReverse = {v:k for k,v in exchangeMap.items()}
+exchangeMapReverse = {v:k for k,v in list(exchangeMap.items())}
 
 
 #----------------------------------------------------------------------
 def print_dict(d):
     """"""
-    print '-' * 30
-    l = d.keys()
+    print(('-' * 30))
+    l = list(d.keys())
     l.sort()
     for k in l:
-        print '%s:%s' %(k, d[k])
+        print(('%s:%s' %(k, d[k])))
     
 
 ########################################################################
@@ -85,7 +85,7 @@ class SecGateway(VtGateway):
         except IOError:
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'读取连接配置出错，请检查'
+            log.logContent = '读取连接配置出错，请检查'
             self.onLog(log)
             return
         
@@ -99,7 +99,7 @@ class SecGateway(VtGateway):
         except KeyError:
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'连接配置缺少字段，请检查'
+            log.logContent = '连接配置缺少字段，请检查'
             self.onLog(log)
             return            
         
@@ -267,7 +267,7 @@ class SecMdApi(MdApi):
     
         log = VtLogData()
         log.gatewayName = self.gatewayName
-        log.logContent = u'行情服务器连接成功'
+        log.logContent = '行情服务器连接成功'
         self.gateway.onLog(log)
         self.login()
     
@@ -280,7 +280,7 @@ class SecMdApi(MdApi):
     
         log = VtLogData()
         log.gatewayName = self.gatewayName
-        log.logContent = u'行情服务器连接断开，原因：%s' %reason
+        log.logContent = '行情服务器连接断开，原因：%s' %reason
         self.gateway.onLog(log) 
     
     #----------------------------------------------------------------------
@@ -290,7 +290,7 @@ class SecMdApi(MdApi):
         
         log = VtLogData()
         log.gatewayName = self.gatewayName
-        log.logContent = u'行情消息通知：%s' %msg
+        log.logContent = '行情消息通知：%s' %msg
         self.gateway.onLog(log)         
     
     #----------------------------------------------------------------------
@@ -309,7 +309,7 @@ class SecMdApi(MdApi):
         if not error:
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'股票行情服务器登录完成'
+            log.logContent = '股票行情服务器登录完成'
             self.gateway.onLog(log)
         # 否则，推送错误信息
         else:
@@ -334,7 +334,7 @@ class SecMdApi(MdApi):
 
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'期权行情服务器登录完成'
+            log.logContent = '期权行情服务器登录完成'
             self.gateway.onLog(log)
 
             # 重新订阅之前订阅的合约
@@ -688,7 +688,7 @@ class SecTdApi(TdApi):
     
         log = VtLogData()
         log.gatewayName = self.gatewayName
-        log.logContent = u'交易服务器连接成功'
+        log.logContent = '交易服务器连接成功'
         self.gateway.onLog(log)
     
         self.login()
@@ -702,7 +702,7 @@ class SecTdApi(TdApi):
     
         log = VtLogData()
         log.gatewayName = self.gatewayName
-        log.logContent = u'交易服务器连接断开，原因%s' %reason
+        log.logContent = '交易服务器连接断开，原因%s' %reason
         self.gateway.onLog(log) 
     
     #----------------------------------------------------------------------
@@ -712,7 +712,7 @@ class SecTdApi(TdApi):
         
         log = VtLogData()
         log.gatewayName = self.gatewayName
-        log.logContent = u'交易消息通知：%s' %msg
+        log.logContent = '交易消息通知：%s' %msg
         self.gateway.onLog(log)   
         
     #----------------------------------------------------------------------
@@ -734,7 +734,7 @@ class SecTdApi(TdApi):
             
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'股票交易服务器登录完成'
+            log.logContent = '股票交易服务器登录完成'
             self.gateway.onLog(log)
             
             self.qryStockContracts()
@@ -923,7 +923,7 @@ class SecTdApi(TdApi):
         if flag:
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'股票交易合约信息获取完成'
+            log.logContent = '股票交易合约信息获取完成'
             self.gateway.onLog(log)
     
     #----------------------------------------------------------------------
@@ -1066,7 +1066,7 @@ class SecTdApi(TdApi):
             
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'期权交易服务器登录完成'
+            log.logContent = '期权交易服务器登录完成'
             self.gateway.onLog(log)
             
             self.qryOptionContracts()
@@ -1247,7 +1247,7 @@ class SecTdApi(TdApi):
         if flag:
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'期权交易合约信息获取完成'
+            log.logContent = '期权交易合约信息获取完成'
             self.gateway.onLog(log)
     
     #----------------------------------------------------------------------

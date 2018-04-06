@@ -1,7 +1,7 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+
+
+
+
 
 from builtins import *
 import time
@@ -504,11 +504,11 @@ class DataApi(object):
             elif method == ".sys.heartbeat":
                 if 'sub_hash' in data:
                     if self._sub_hash and self._sub_hash != data['sub_hash']:
-                        print("sub_hash is not same", self._sub_hash, data['sub_hash'])
+                        print(("sub_hash is not same", self._sub_hash, data['sub_hash']))
                         self._do_subscribe()
         
         except Exception as e:
-            print("Can't load jrpc", e.message)
+            print(("Can't load jrpc", e.message))
     
     def _call_rpc(self, method, data_format, data_class, **kwargs):
         
@@ -518,7 +518,7 @@ class DataApi(object):
         
         index_column = None
         rpc_params = {}
-        for key, value in kwargs.items():
+        for key, value in list(kwargs.items()):
             if key  == '_index_column':
                 index_column = value
             else:

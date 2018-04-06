@@ -62,7 +62,7 @@ def main(cpp_filename, py_filename):
     cpp_f.close()
     py_f.close()
         
-    print u'struct处理完成'
+    print('struct处理完成')
     
 
 if __name__ == '__main__':

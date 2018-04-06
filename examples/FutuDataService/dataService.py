@@ -56,7 +56,7 @@ def downMinuteBarBySymbol(symbol):
     
     code, data = quote.get_history_kline(symbol, start=startDate, ktype='K_1M')
     if code:
-        print u'合约%s数据下载失败：%s' %(symbol, data)
+        print(('合约%s数据下载失败：%s' %(symbol, data)))
         return
         
     data = data.sort_index()
@@ -70,24 +70,24 @@ def downMinuteBarBySymbol(symbol):
     end = time()
     cost = (end - start) * 1000
 
-    print u'合约%s数据下载完成%s - %s，耗时%s毫秒' %(symbol, data.iloc[0]['time_key'], 
-                                                  data.iloc[-1]['time_key'], cost)
+    print(('合约%s数据下载完成%s - %s，耗时%s毫秒' %(symbol, data.iloc[0]['time_key'], 
+                                                  data.iloc[-1]['time_key'], cost)))
 
     
 #----------------------------------------------------------------------
 def downloadAllMinuteBar():
     """下载所有配置中的合约的分钟线数据"""
-    print '-' * 50
-    print u'开始下载合约分钟线数据'
-    print '-' * 50
+    print(('-' * 50))
+    print('开始下载合约分钟线数据')
+    print(('-' * 50))
     
     # 添加下载任务
     for symbol in SYMBOLS:
         downMinuteBarBySymbol(str(symbol))
     
-    print '-' * 50
-    print u'合约分钟线数据下载完成'
-    print '-' * 50
+    print(('-' * 50))
+    print('合约分钟线数据下载完成')
+    print(('-' * 50))
     
 
 

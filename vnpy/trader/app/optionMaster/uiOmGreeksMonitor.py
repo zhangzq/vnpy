@@ -10,18 +10,18 @@ from .uiOmBase import *
 class GreeksMonitor(QtWidgets.QTableWidget):
     """希腊值监控"""
     headers = [
-        u'代码',
-        u'多仓',
-        u'空仓',
-        u'净仓',
-        u'Delta',
-        u'Gamma',
-        u'Theta',
-        u'Vega',
-        u'持仓Delta',
-        u'持仓Gamma',
-        u'持仓Theta',
-        u'持仓Vega'
+        '代码',
+        '多仓',
+        '空仓',
+        '净仓',
+        'Delta',
+        'Gamma',
+        'Theta',
+        'Vega',
+        '持仓Delta',
+        '持仓Gamma',
+        '持仓Theta',
+        '持仓Vega'
     ]    
     
     signal = QtCore.pyqtSignal(type(Event()))
@@ -47,14 +47,14 @@ class GreeksMonitor(QtWidgets.QTableWidget):
         """初始化界面"""
         portfolio = self.portfolio
         
-        self.setWindowTitle(u'希腊值监控')
+        self.setWindowTitle('希腊值监控')
         
         # 计算所需行数
         totalRow = 1                                
         totalRow += len(portfolio.underlyingDict) + 1
         totalRow += len(portfolio.chainDict) + 1
             
-        for chain in portfolio.chainDict.values():
+        for chain in list(portfolio.chainDict.values()):
             totalRow += len(chain.optionDict) + 1
     
         # 初始化表格
@@ -108,7 +108,7 @@ class GreeksMonitor(QtWidgets.QTableWidget):
         # 标的
         row += 1    # 空行
         
-        for underlying in portfolio.underlyingDict.values():
+        for underlying in list(portfolio.underlyingDict.values()):
             cellSymbol = OmCell(underlying.symbol, COLOR_SYMBOL, COLOR_BLACK)
             cellLongPos = OmCell(0, COLOR_POS, COLOR_BLACK)
             cellShortPos = OmCell(0, COLOR_POS, COLOR_BLACK)
@@ -136,7 +136,7 @@ class GreeksMonitor(QtWidgets.QTableWidget):
         # 期权链
         row += 1
         
-        for chain in portfolio.chainDict.values():
+        for chain in list(portfolio.chainDict.values()):
             cellSymbol = OmCell(chain.symbol, COLOR_SYMBOL, COLOR_BLACK)
             cellLongPos = OmCell(0, COLOR_POS, COLOR_BLACK)
             cellShortPos = OmCell(0, COLOR_POS, COLOR_BLACK)
@@ -180,10 +180,10 @@ class GreeksMonitor(QtWidgets.QTableWidget):
             row += 1
             
         # 期权
-        for chain in portfolio.chainDict.values():
+        for chain in list(portfolio.chainDict.values()):
             row += 1
             
-            for option in chain.optionDict.values():
+            for option in list(chain.optionDict.values()):
                 cellSymbol = OmCell(option.symbol, COLOR_SYMBOL, COLOR_BLACK)
                 cellLongPos = OmCell(0, COLOR_POS, COLOR_BLACK)
                 cellShortPos = OmCell(0, COLOR_POS, COLOR_BLACK)
@@ -257,7 +257,7 @@ class GreeksMonitor(QtWidgets.QTableWidget):
         d['posVega'].setText('%.1f' %portfolio.posVega)
         
         # 更新标的
-        for underlying in portfolio.underlyingDict.values():
+        for underlying in list(portfolio.underlyingDict.values()):
             d = self.cellDict[underlying.symbol]
             d['longPos'].setText(str(underlying.longPos))
             d['shortPos'].setText(str(underlying.shortPos))
@@ -265,7 +265,7 @@ class GreeksMonitor(QtWidgets.QTableWidget):
             d['posDelta'].setText('%.1f' %underlying.posDelta)
         
         # 更新期权链
-        for chain in portfolio.chainDict.values():
+        for chain in list(portfolio.chainDict.values()):
             d = self.cellDict[chain.symbol + '_chain']
             d['longPos'].setText(str(chain.longPos))
             d['shortPos'].setText(str(chain.shortPos))
@@ -276,8 +276,8 @@ class GreeksMonitor(QtWidgets.QTableWidget):
             d['posVega'].setText('%.1f' %chain.posVega)
         
         # 更新期权
-        for chain in portfolio.chainDict.values():
-            for option in chain.optionDict.values():
+        for chain in list(portfolio.chainDict.values()):
+            for option in list(chain.optionDict.values()):
                 d = self.cellDict[option.symbol]
                 d['longPos'].setText(str(option.longPos))
                 d['shortPos'].setText(str(option.shortPos))

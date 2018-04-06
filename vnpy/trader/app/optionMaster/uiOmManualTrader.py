@@ -7,7 +7,7 @@ from vnpy.trader.vtObject import VtOrderReq
 from vnpy.trader.vtEvent import EVENT_TICK, EVENT_TRADE
 from vnpy.trader.uiBasicWidget import WorkingOrderMonitor, PositionMonitor
 
-from uiOmBase import *
+from .uiOmBase import *
 
 
 
@@ -15,23 +15,23 @@ from uiOmBase import *
 class ChainMonitor(QtWidgets.QTableWidget):
     """期权链监控"""
     headers = [
-        u'代码',
-        u'买价',
-        u'买量',
-        u'买隐波',
-        u'卖价',
-        u'卖量',
-        u'卖隐波',
-        u'净仓',
-        u'行权价',
-        u'净仓',
-        u'买价',
-        u'买量',
-        u'买隐波',
-        u'卖价',
-        u'卖量',
-        u'卖隐波',
-        u'代码'
+        '代码',
+        '买价',
+        '买量',
+        '买隐波',
+        '卖价',
+        '卖量',
+        '卖隐波',
+        '净仓',
+        '行权价',
+        '净仓',
+        '买价',
+        '买量',
+        '买隐波',
+        '卖价',
+        '卖量',
+        '卖隐波',
+        '代码'
     ]
     
     signalTick = QtCore.pyqtSignal(type(Event()))
@@ -78,7 +78,7 @@ class ChainMonitor(QtWidgets.QTableWidget):
         rowCount = 0
         rowCount += len(portfolio.underlyingDict)
         rowCount += len(portfolio.chainDict)
-        for chain in portfolio.chainDict.values():
+        for chain in list(portfolio.chainDict.values()):
             rowCount += len(chain.callDict)
         self.setRowCount(rowCount)
         
@@ -93,7 +93,7 @@ class ChainMonitor(QtWidgets.QTableWidget):
         # 初始化标的单元格
         row = 0
         
-        for underlying in portfolio.underlyingDict.values():
+        for underlying in list(portfolio.underlyingDict.values()):
             symbol = underlying.symbol
             
             cellSymbol = OmCell(symbol, COLOR_SYMBOL, COLOR_BLACK, underlying)
@@ -121,12 +121,12 @@ class ChainMonitor(QtWidgets.QTableWidget):
         row += 1
             
         # 初始化期权单元格
-        for chain in portfolio.chainDict.values():
+        for chain in list(portfolio.chainDict.values()):
             
             # call
             callRow = row
             
-            for option in chain.callDict.values():    
+            for option in list(chain.callDict.values()):    
                 cellSymbol = OmCell(option.symbol, COLOR_SYMBOL, COLOR_BLACK, option)
                 cellBidPrice = OmCell(str(option.bidPrice1), COLOR_BID, COLOR_BLACK, option)
                 cellBidVolume = OmCell(str(option.bidVolume1), COLOR_BID, COLOR_BLACK, option)
@@ -160,7 +160,7 @@ class ChainMonitor(QtWidgets.QTableWidget):
             # put
             putRow = row
             
-            for option in chain.putDict.values():
+            for option in list(chain.putDict.values()):
                 cellSymbol = OmCell(option.symbol, COLOR_SYMBOL, COLOR_BLACK, option)
                 cellBidPrice = OmCell(str(option.bidPrice1), COLOR_BID, COLOR_BLACK, option)
                 cellBidVolume = OmCell(str(option.bidVolume1), COLOR_BID, COLOR_BLACK, option)
@@ -199,12 +199,12 @@ class ChainMonitor(QtWidgets.QTableWidget):
         
         portfolio = self.omEngine.portfolio
         
-        for underlying in portfolio.underlyingDict.values():
+        for underlying in list(portfolio.underlyingDict.values()):
             self.eventEngine.register(EVENT_TICK + underlying.vtSymbol, self.signalTick.emit)
             self.eventEngine.register(EVENT_TRADE + underlying.vtSymbol, self.signalTrade.emit)
         
-        for chain in portfolio.chainDict.values():
-            for option in chain.optionDict.values():
+        for chain in list(portfolio.chainDict.values()):
+            for option in list(chain.optionDict.values()):
                 self.eventEngine.register(EVENT_TICK + option.vtSymbol, self.signalTick.emit)
                 self.eventEngine.register(EVENT_TRADE + option.vtSymbol, self.signalTrade.emit)
     
@@ -254,18 +254,18 @@ class TradingWidget(QtWidgets.QWidget):
         """初始化界面"""
         self.setFixedWidth(200)
         
-        labelTradingWidget = QtWidgets.QLabel(u'期权交易')
-        labelSymbol = QtWidgets.QLabel(u'代码')
-        labelDirection = QtWidgets.QLabel(u'方向')
-        labelPrice = QtWidgets.QLabel(u'价格')
-        labelVolume = QtWidgets.QLabel(u'数量')
+        labelTradingWidget = QtWidgets.QLabel('期权交易')
+        labelSymbol = QtWidgets.QLabel('代码')
+        labelDirection = QtWidgets.QLabel('方向')
+        labelPrice = QtWidgets.QLabel('价格')
+        labelVolume = QtWidgets.QLabel('数量')
         
         self.lineSymbol = QtWidgets.QLineEdit()
         self.comboDirection = QtWidgets.QComboBox()
         self.comboDirection.addItems([DIRECTION_LONG, DIRECTION_SHORT])
         self.linePrice = QtWidgets.QLineEdit()
         self.lineVolume = QtWidgets.QLineEdit()
-        self.buttonSendOrder = QtWidgets.QPushButton(u'发单')
+        self.buttonSendOrder = QtWidgets.QPushButton('发单')
         self.buttonSendOrder.clicked.connect(self.sendOrder)
         
         grid = QtWidgets.QGridLayout()
@@ -373,7 +373,7 @@ class ManualTrader(QtWidgets.QWidget):
     #----------------------------------------------------------------------
     def initUi(self):
         """初始化界面"""
-        self.setWindowTitle(u'手动交易')
+        self.setWindowTitle('手动交易')
         
         posMonitor = PositionMonitor(self.mainEngine, self.eventEngine)
         for i in range(posMonitor.columnCount()):

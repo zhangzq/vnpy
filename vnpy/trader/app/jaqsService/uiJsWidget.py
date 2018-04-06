@@ -29,7 +29,7 @@ class JsEngineManager(QtWidgets.QWidget):
     #----------------------------------------------------------------------
     def initUi(self):
         """初始化界面"""
-        self.setWindowTitle(u'Jaqs服务')
+        self.setWindowTitle('Jaqs服务')
         # 日志监控
         self.logMonitor = QtWidgets.QTextEdit()
         self.logMonitor.setReadOnly(True)

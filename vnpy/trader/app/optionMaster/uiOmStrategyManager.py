@@ -44,11 +44,11 @@ class ValueMonitor(QtWidgets.QTableWidget):
         """更新数据"""
         if not self.inited:
             self.setColumnCount(len(data))
-            self.setHorizontalHeaderLabels(data.keys())
+            self.setHorizontalHeaderLabels(list(data.keys()))
             
             col = 0
-            for k, v in data.items():
-                cell = QtWidgets.QTableWidgetItem(unicode(v))
+            for k, v in list(data.items()):
+                cell = QtWidgets.QTableWidgetItem(str(v))
                 cell.key = k
 
                 self.keyCellDict[k] = cell
@@ -57,9 +57,9 @@ class ValueMonitor(QtWidgets.QTableWidget):
             
             self.inited = True
         else:
-            for k, v in data.items():
+            for k, v in list(data.items()):
                 cell = self.keyCellDict[k]
-                cell.setText(unicode(v))
+                cell.setText(str(v))
                 
 
 ########################################################################
@@ -92,9 +92,9 @@ class StrategyManager(QtWidgets.QGroupBox):
         self.paramMonitor.setFixedHeight(height)
         self.varMonitor.setFixedHeight(height)
         
-        buttonInit = QtWidgets.QPushButton(u'初始化')
-        buttonStart = QtWidgets.QPushButton(u'启动')
-        buttonStop = QtWidgets.QPushButton(u'停止')
+        buttonInit = QtWidgets.QPushButton('初始化')
+        buttonStart = QtWidgets.QPushButton('启动')
+        buttonStop = QtWidgets.QPushButton('停止')
         buttonInit.clicked.connect(self.init)
         buttonStart.clicked.connect(self.start)
         buttonStop.clicked.connect(self.stop)
@@ -155,7 +155,7 @@ class StrategyManager(QtWidgets.QGroupBox):
     #----------------------------------------------------------------------
     def setParam(self, cell):
         """更新参数"""
-        text = unicode(cell.text())
+        text = str(cell.text())
         key = cell.key
         
         if text.isdigit():
@@ -188,18 +188,18 @@ class StrategyEngineManager(QtWidgets.QWidget):
         self.registerEvent()
         
         # 记录日志
-        self.engine.writeLog(u'期权策略引擎启动')        
+        self.engine.writeLog('期权策略引擎启动')        
         
     #----------------------------------------------------------------------
     def initUi(self):
         """初始化界面"""
-        self.setWindowTitle(u'期权策略')
+        self.setWindowTitle('期权策略')
         
         # 按钮
-        loadButton = QtWidgets.QPushButton(u'加载策略')
-        initAllButton = QtWidgets.QPushButton(u'全部初始化')
-        startAllButton = QtWidgets.QPushButton(u'全部启动')
-        stopAllButton = QtWidgets.QPushButton(u'全部停止')
+        loadButton = QtWidgets.QPushButton('加载策略')
+        initAllButton = QtWidgets.QPushButton('全部初始化')
+        startAllButton = QtWidgets.QPushButton('全部启动')
+        stopAllButton = QtWidgets.QPushButton('全部停止')
         
         loadButton.clicked.connect(self.load)
         initAllButton.clicked.connect(self.initAll)
@@ -235,7 +235,7 @@ class StrategyEngineManager(QtWidgets.QWidget):
         w = QtWidgets.QWidget()
         vbox = QtWidgets.QVBoxLayout()
         
-        for name in self.engine.strategyDict.keys():
+        for name in list(self.engine.strategyDict.keys()):
             strategyManager = StrategyManager(self.engine, self.eventEngine, name)
             vbox.addWidget(strategyManager)
         
@@ -266,7 +266,7 @@ class StrategyEngineManager(QtWidgets.QWidget):
             self.engine.loadSetting()
             self.initStrategyManager()
             self.strategyLoaded = True
-            self.engine.writeLog(u'策略加载成功')
+            self.engine.writeLog('策略加载成功')
         
     #----------------------------------------------------------------------
     def updateLog(self, event):
